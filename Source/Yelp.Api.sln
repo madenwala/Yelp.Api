@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yelp.Api", "Yelp.Api\Yelp.Api.csproj", "{200A88E3-8B18-4FA8-896E-638EA6F65C19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yelp.Api.Test", "Yelp.Api.Test\Yelp.Api.Test.csproj", "{7D4C139E-AFA1-4EED-9BC0-0476BB6EFD6D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{200A88E3-8B18-4FA8-896E-638EA6F65C19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{200A88E3-8B18-4FA8-896E-638EA6F65C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{200A88E3-8B18-4FA8-896E-638EA6F65C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{200A88E3-8B18-4FA8-896E-638EA6F65C19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4C139E-AFA1-4EED-9BC0-0476BB6EFD6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4C139E-AFA1-4EED-9BC0-0476BB6EFD6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4C139E-AFA1-4EED-9BC0-0476BB6EFD6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4C139E-AFA1-4EED-9BC0-0476BB6EFD6D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Yelp.Api</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/madenwala/Yelp.API</licenseUrl>
+    <projectUrl>https://github.com/madenwala/Yelp.API</projectUrl>
+    <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Pre-release of C# Portable Class Library for Yelp (v3) Fusion API. Yelp's Fusion API allows you to get the best local business information and user reviews of over million businesses in 32 countries.</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>Yelp Food Restaurants</tags>
+  </metadata>
+</package>
