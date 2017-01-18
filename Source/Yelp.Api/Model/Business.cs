@@ -45,5 +45,14 @@ namespace Yelp.Api.Model
 
         [JsonProperty("review_count")]
         public int ReviewCount { get; set; }
+
+        [JsonProperty("photos")]
+        public string[] Photos { get; set; }
+
+        [JsonProperty("hours")]
+        public Hour[] Hours { get; set; }        
+
+        [JsonProperty("is_claimed")]
+        public bool IsClaimed { get; set; }
     }
 }

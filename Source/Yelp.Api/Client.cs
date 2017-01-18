@@ -91,6 +91,12 @@ namespace Yelp.Api
             return await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct);
         }
 
+        public async Task<Business> GetBusinessAsync(string businessID, CancellationToken ct)
+        {
+            await this.ApplyAuthenticationHeaders(ct);            
+            return await this.GetAsync<Business>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct);
+        }
+
         #region Validation
 
         private void ValidateCoordinates(double latitude, double longitude)

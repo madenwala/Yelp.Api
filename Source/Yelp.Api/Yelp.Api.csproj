@@ -41,9 +41,11 @@
     <Compile Include="Model\Business.cs" />
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\Coordinate.cs" />
+    <Compile Include="Model\Hour.cs" />
     <Compile Include="Model\ILogger.cs" />
     <Compile Include="Model\Location.cs" />
     <Compile Include="Model\ModelBase.cs" />
+    <Compile Include="Model\Open.cs" />
     <Compile Include="Model\Region.cs" />
     <Compile Include="Model\ResponseBase.cs" />
     <Compile Include="Model\SearchResponse.cs" />
