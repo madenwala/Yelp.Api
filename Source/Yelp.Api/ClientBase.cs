@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Yelp.Api.Model;
+using Yelp.Api.Models;
 
 namespace Yelp.Api
 {

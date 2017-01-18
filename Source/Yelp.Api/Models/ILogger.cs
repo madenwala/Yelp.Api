@@ -1,4 +1,4 @@
-﻿namespace Yelp.Api.Model
+﻿namespace Yelp.Api.Models
 {
     public interface ILogger
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Yelp.Api.Model
+namespace Yelp.Api.Models
 {
     public abstract class ResponseBase : ModelBase
     {

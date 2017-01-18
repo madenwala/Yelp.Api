@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Yelp.Api.Model;
+using Yelp.Api.Models;
 
 namespace Yelp.Api
 {
@@ -99,6 +99,7 @@ namespace Yelp.Api
             string querystring = dic.ToQueryString();
             return await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
         }
+
         /// <summary>
         /// Searches any and all businesses matching the specified search text.
         /// </summary>

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Yelp.Api.Model
+namespace Yelp.Api.Models
 {
     public abstract class ModelBase : INotifyPropertyChanged
     {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Yelp.Api.Model
+namespace Yelp.Api.Models
 {
     public class SearchResponse : ResponseBase
     {
