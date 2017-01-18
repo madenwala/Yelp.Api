@@ -37,7 +37,16 @@ namespace Yelp.Api.Test
         [TestMethod]
         public void TestSearch()
         {
-            var response = _client.SearchBusinessesAsync("cupcakes", 37.786882, -122.399972, CancellationToken.None).Result;
+            var response = _client.SearchBusinessesAllAsync("cupcakes", 37.786882, -122.399972, CancellationToken.None).Result;
+
+            Assert.AreNotSame(null, response);
+            //Assert.AreSame(null, response?.Error);
+        }
+
+        [TestMethod]
+        public void TestSearchDelivery()
+        {
+            var response = _client.SearchBusinessesWithDeliveryAsync("mex", 37.786882, -122.399972, CancellationToken.None).Result;
 
             Assert.AreNotSame(null, response);
             //Assert.AreSame(null, response?.Error);

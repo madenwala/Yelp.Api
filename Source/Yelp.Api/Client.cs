@@ -65,13 +65,28 @@ namespace Yelp.Api
 
         #endregion
 
-        public async Task<SearchResponse> SearchBusinessesAsync(string term, double latitude, double longitude, CancellationToken ct)
+        public async Task<SearchResponse> SearchBusinessesWithDeliveryAsync(string term, double latitude, double longitude, CancellationToken ct)
         {
             this.ValidateCoordinates(latitude, longitude);
             await this.ApplyAuthenticationHeaders(ct);
 
             var dic = new Dictionary<string, object>();
-            dic.Add("term", term);
+            if(!string.IsNullOrEmpty(term))
+                dic.Add("term", term);
+            dic.Add("latitude", latitude);
+            dic.Add("longitude", longitude);
+            string querystring = dic.ToQueryString();
+            return await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
+        }
+
+        public async Task<SearchResponse> SearchBusinessesAllAsync(string term, double latitude, double longitude, CancellationToken ct)
+        {
+            this.ValidateCoordinates(latitude, longitude);
+            await this.ApplyAuthenticationHeaders(ct);
+
+            var dic = new Dictionary<string, object>();
+            if (!string.IsNullOrEmpty(term))
+                dic.Add("term", term);
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
             string querystring = dic.ToQueryString();
