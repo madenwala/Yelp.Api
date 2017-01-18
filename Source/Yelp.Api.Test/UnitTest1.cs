@@ -59,6 +59,15 @@ namespace Yelp.Api.Test
 
             Assert.AreNotSame(null, response);
             //Assert.AreSame(null, response?.Error);
-        }        
+        }
+
+        [TestMethod]
+        public void TestGetReviews()
+        {
+            var response = _client.GetReviewsAsync("north-india-restaurant-san-francisco", CancellationToken.None).Result;
+
+            Assert.AreNotSame(null, response);
+            //Assert.AreSame(null, response?.Error);
+        }
     }
 }

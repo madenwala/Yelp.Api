@@ -48,8 +48,11 @@
     <Compile Include="Model\Open.cs" />
     <Compile Include="Model\Region.cs" />
     <Compile Include="Model\ResponseBase.cs" />
+    <Compile Include="Model\Review.cs" />
+    <Compile Include="Model\ReviewsResponse.cs" />
     <Compile Include="Model\SearchResponse.cs" />
     <Compile Include="Model\TokenResponse.cs" />
+    <Compile Include="Model\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

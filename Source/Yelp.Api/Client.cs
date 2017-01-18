@@ -97,6 +97,12 @@ namespace Yelp.Api
             return await this.GetAsync<Business>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct);
         }
 
+        public async Task<ReviewsResponse> GetReviewsAsync(string businessID, CancellationToken ct)
+        {
+            await this.ApplyAuthenticationHeaders(ct);
+            return await this.GetAsync<ReviewsResponse>(API_VERSION + $"/businesses/{Uri.EscapeUriString(businessID)}/reviews", ct);
+        }
+
         #region Validation
 
         private void ValidateCoordinates(double latitude, double longitude)
