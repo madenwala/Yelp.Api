@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Threading;
 
 namespace Yelp.Api.Test
@@ -25,14 +25,7 @@ namespace Yelp.Api.Test
 
         #endregion
 
-        [TestMethod]
-        public void TestAuthToken()
-        {
-            var response = _client.GetTokenAsync(CancellationToken.None).Result;
-
-            Assert.AreNotSame(null, response);
-            Assert.AreSame(null, response?.Error);
-        }
+        #region Methods
 
         [TestMethod]
         public void TestSearch()
@@ -40,7 +33,7 @@ namespace Yelp.Api.Test
             var response = _client.SearchBusinessesAllAsync("cupcakes", 37.786882, -122.399972, CancellationToken.None).Result;
 
             Assert.AreNotSame(null, response);
-            //Assert.AreSame(null, response?.Error);
+            Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
         }
 
         [TestMethod]
@@ -49,7 +42,7 @@ namespace Yelp.Api.Test
             var response = _client.SearchBusinessesWithDeliveryAsync("mex", 37.786882, -122.399972, CancellationToken.None).Result;
 
             Assert.AreNotSame(null, response);
-            //Assert.AreSame(null, response?.Error);
+            Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
         }
 
         [TestMethod]
@@ -58,7 +51,7 @@ namespace Yelp.Api.Test
             var response = _client.AutocompleteAsync("mcdonald", 37.786882, -122.399972, CancellationToken.None).Result;
 
             Assert.AreNotSame(null, response);
-            //Assert.AreSame(null, response?.Error);
+            Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
         }
 
         [TestMethod]
@@ -67,7 +60,7 @@ namespace Yelp.Api.Test
             var response = _client.GetBusinessAsync("north-india-restaurant-san-francisco", CancellationToken.None).Result;
 
             Assert.AreNotSame(null, response);
-            //Assert.AreSame(null, response?.Error);
+            Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
         }
 
         [TestMethod]
@@ -76,7 +69,9 @@ namespace Yelp.Api.Test
             var response = _client.GetReviewsAsync("north-india-restaurant-san-francisco", CancellationToken.None).Result;
 
             Assert.AreNotSame(null, response);
-            //Assert.AreSame(null, response?.Error);
+            Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
         }
+
+        #endregion
     }
 }

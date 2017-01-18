@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Yelp.Api")]
-[assembly: AssemblyDescription("Yelp's Fusion API allows you to get the best local business information and user reviews of over million businesses in 32 countries.")]
+[assembly: AssemblyDescription("C# Portable Class Library for Yelp (v3) Fusion API works with Windows 10, Windows 8, Windows Phone, ASP.NET, Xamarin (iOS/Android), Mac, and other .NET projects. Yelp's (v3) Fusion API allows you to get the best local business information and user reviews of over million businesses in 32 countries.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Mohammed Adenwala")]
 [assembly: AssemblyProduct("Yelp.Api")]
@@ -26,5 +26,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.2.0.0")]
-[assembly: AssemblyFileVersion("0.2.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

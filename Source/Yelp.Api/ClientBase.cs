@@ -63,7 +63,6 @@ namespace Yelp.Api
 
             var response = await this.Client.GetAsync(new Uri(this.BaseUri, url), ct);
             this.Log(response);
-            response.EnsureSuccessStatusCode();
             var data = await response.Content.ReadAsStringAsync();
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(data);
         }
@@ -113,7 +112,6 @@ namespace Yelp.Api
 
             var response = await this.Client.PostAsync(new Uri(this.BaseUri, url), contents, ct);
             this.Log(response);
-            response.EnsureSuccessStatusCode();
             return response;
         }
 

@@ -5,7 +5,7 @@ namespace Yelp.Api.Model
     public class AutocompleteResponse : ResponseBase
     {
         [JsonProperty("businesses")]
-        public Business[] Businesses { get; set; }
+        public BusinessResponse[] Businesses { get; set; }
 
         [JsonProperty("terms")]
         public Term[] Terms { get; set; }

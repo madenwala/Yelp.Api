@@ -2,7 +2,7 @@
 
 namespace Yelp.Api.Model
 {
-    public class Business
+    public class BusinessResponse : ResponseBase
     {
         [JsonProperty("categories")]
         public Category[] Categories { get; set; }
