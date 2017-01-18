@@ -31,5 +31,16 @@ namespace Yelp.Api.Test
             Assert.AreNotSame(null, response);
             //Assert.AreSame(null, response?.Error);
         }
+
+        [TestMethod]
+        public void TestAutocomplete()
+        {
+            Client client = new Client(APP_ID, APP_SECRET);
+
+            var response = client.AutocompleteAsync("mcdonald", 37.786882, -122.399972, CancellationToken.None).Result;
+
+            Assert.AreNotSame(null, response);
+            //Assert.AreSame(null, response?.Error);
+        }
     }
 }

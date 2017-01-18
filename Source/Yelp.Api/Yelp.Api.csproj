@@ -37,18 +37,18 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClientBase.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Model\AutocompleteResponse.cs" />
     <Compile Include="Model\Business.cs" />
+    <Compile Include="Model\Category.cs" />
+    <Compile Include="Model\Coordinate.cs" />
     <Compile Include="Model\ILogger.cs" />
+    <Compile Include="Model\Location.cs" />
     <Compile Include="Model\ModelBase.cs" />
+    <Compile Include="Model\Region.cs" />
     <Compile Include="Model\ResponseBase.cs" />
+    <Compile Include="Model\SearchResponse.cs" />
     <Compile Include="Model\TokenResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="CreatePackage.cmd" />
@@ -57,6 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="nuget.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
