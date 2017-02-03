@@ -15,5 +15,23 @@ namespace Yelp.Api.Models
 
         [JsonProperty("start")]
         public string Start { get; set; }
+
+        private string FormatTime(string time)
+        {
+            try
+            {
+                var dt = System.DateTime.Today.AddHours(double.Parse(time.Substring(0, 2))).AddMinutes(double.Parse(time.Substring(2)));
+                return dt.ToString("hh:mmtt").ToLowerInvariant();
+            }
+            catch
+            {
+                return time;
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: {1} - {2}", (System.DayOfWeek)this.Day, this.FormatTime(this.Start), this.FormatTime(this.End));
+        }
     }
 }
