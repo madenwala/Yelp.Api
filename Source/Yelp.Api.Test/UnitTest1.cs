@@ -66,7 +66,7 @@ namespace Yelp.Api.Test
         [TestMethod]
         public void TestGetReviews()
         {
-            var response = _client.GetReviewsAsync("north-india-restaurant-san-francisco", CancellationToken.None).Result;
+            var response = _client.GetReviewsAsync("north-india-restaurant-san-francisco").Result;
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
