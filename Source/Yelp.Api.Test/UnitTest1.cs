@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading;
+using Yelp.Api.Models;
 
 namespace Yelp.Api.Test
 {
@@ -70,6 +71,21 @@ namespace Yelp.Api.Test
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
+        }
+
+
+
+        [TestMethod]
+        public void TestGetModelChanges()
+        {
+            var m = new SearchParameters();
+            m.Term = "Hello world";
+            m.Price = "$";
+            var dic = m.GetChangedProperties();
+
+            Assert.AreEqual(dic.Count, 2);
+            Assert.IsTrue(dic.ContainsKey("term"));
+            Assert.IsTrue(dic.ContainsKey("price"));
         }
 
         #endregion

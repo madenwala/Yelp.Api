@@ -1,11 +1,61 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace Yelp.Api.Models
 {
+    public abstract class TrackedChangesModelBase : ModelBase
+    {
+        private List<string> _changedProperties = new List<string>();
+        
+        internal void ClearPropertiesChangedList()
+        {
+            _changedProperties.Clear();
+        }
+
+        public Dictionary<string, object> GetChangedProperties()
+        {
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+            foreach (var propertyName in _changedProperties)
+            {
+                PropertyInfo pi = this.GetType().GetRuntimeProperty(propertyName);
+
+                var jsonProp = pi.CustomAttributes.FirstOrDefault(f => f.AttributeType.GetTypeInfo() == typeof(JsonPropertyAttribute).GetTypeInfo());
+                if (jsonProp != null && jsonProp.ConstructorArguments.Any())
+                {
+                    var argument = jsonProp.ConstructorArguments.FirstOrDefault();
+                    var name = argument.Value.ToString().Replace("\"", "");
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        var value = pi.GetValue(this);
+                        if (value != null)
+                            dic.Add(name, value);
+                    }
+                }
+                else
+                {
+                    var value = pi.GetValue(this);
+                    if (value != null)
+                        dic.Add(propertyName, value);
+                }
+            }
+
+            return dic;
+        }
+
+        protected internal override void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            base.NotifyPropertyChanged(propertyName);
+            if (_changedProperties.Contains(propertyName) == false)
+                _changedProperties.Add(propertyName);
+        }
+    }
+
     public abstract class ModelBase : INotifyPropertyChanged
     {
         #region Events
@@ -51,7 +101,7 @@ namespace Yelp.Api.Models
         /// <param name="propertyName">Optional name of the property used to notify listeners.  This
         /// value is optional and can be provided automatically when invoked from compilers
         /// that support <see cref="CallerMemberNameAttribute"/>.</param>
-        protected internal void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        protected internal virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -50,6 +50,7 @@
     <Compile Include="Models\ResponseBase.cs" />
     <Compile Include="Models\Review.cs" />
     <Compile Include="Models\ReviewsResponse.cs" />
+    <Compile Include="Models\SearchParameters.cs" />
     <Compile Include="Models\SearchResponse.cs" />
     <Compile Include="Models\TokenResponse.cs" />
     <Compile Include="Models\User.cs" />
