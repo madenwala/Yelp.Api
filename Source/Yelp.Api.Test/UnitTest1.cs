@@ -48,7 +48,7 @@ namespace Yelp.Api.Test
         [TestMethod]
         public void TestAutocomplete()
         {
-            var response = _client.AutocompleteAsync("mcdonald", 37.786882, -122.399972, CancellationToken.None).Result;
+            var response = _client.AutocompleteAsync("mcdonald", 37.786882, -122.399972).Result;
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");

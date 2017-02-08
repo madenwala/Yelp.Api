@@ -122,25 +122,36 @@ namespace Yelp.Api
             return await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct);
         }
 
+        #endregion
+
+        #region Autocomplete
+
         /// <summary>
         /// Searches businesses matching the specified search text used in a client search autocomplete box.
         /// </summary>
         /// <param name="term">Text to search businesses with.</param>
         /// <param name="latitude">User's current latitude.</param>
         /// <param name="longitude">User's current longitude.</param>
+        /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>AutocompleteResponse with businesses/categories/terms matching the specified parameters.</returns>
-        public async Task<AutocompleteResponse> AutocompleteAsync(string text, double latitude, double longitude, CancellationToken ct)
+        public async Task<AutocompleteResponse> AutocompleteAsync(string text, double latitude, double longitude, string locale = null, CancellationToken? ct = null)
         {
+            if (ct == null)
+                ct = CancellationToken.None;
+
             this.ValidateCoordinates(latitude, longitude);
-            await this.ApplyAuthenticationHeaders(ct);
+            await this.ApplyAuthenticationHeaders(ct.Value);
 
             var dic = new Dictionary<string, object>();
             dic.Add("text", text);
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
+            if(!string.IsNullOrEmpty(locale))
+                dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
-            return await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct);
+
+            return await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct.Value);
         }
 
         #endregion
