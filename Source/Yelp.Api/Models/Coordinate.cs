@@ -5,9 +5,9 @@ namespace Yelp.Api.Models
     public class Coordinates
     {
         [JsonProperty("latitude")]
-        public float Latitude { get; set; }
+        public double Latitude { get; set; }
 
         [JsonProperty("longitude")]
-        public float Longitude { get; set; }
+        public double Longitude { get; set; }
     }
 }
