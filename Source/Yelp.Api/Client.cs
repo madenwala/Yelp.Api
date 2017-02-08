@@ -164,10 +164,13 @@ namespace Yelp.Api
         /// <param name="businessID">ID value of the Yelp business.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>BusinessResponse instance with details of the specified business if found.</returns>
-        public async Task<BusinessResponse> GetBusinessAsync(string businessID, CancellationToken ct)
+        public async Task<BusinessResponse> GetBusinessAsync(string businessID, CancellationToken? ct)
         {
-            await this.ApplyAuthenticationHeaders(ct);            
-            return await this.GetAsync<BusinessResponse>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct);
+            if (ct == null)
+                ct = CancellationToken.None;
+
+            await this.ApplyAuthenticationHeaders(ct.Value);            
+            return await this.GetAsync<BusinessResponse>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct.Value);
         }
 
         #endregion
