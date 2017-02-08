@@ -86,10 +86,13 @@ namespace Yelp.Api
         /// <param name="longitude">User's current longitude.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public async Task<SearchResponse> SearchBusinessesWithDeliveryAsync(string term, double latitude, double longitude, CancellationToken ct)
+        public async Task<SearchResponse> SearchBusinessesWithDeliveryAsync(string term, double latitude, double longitude, CancellationToken? ct = null)
         {
+            if (ct == null)
+                ct = CancellationToken.None;
+
             this.ValidateCoordinates(latitude, longitude);
-            await this.ApplyAuthenticationHeaders(ct);
+            await this.ApplyAuthenticationHeaders(ct.Value);
 
             var dic = new Dictionary<string, object>();
             if(!string.IsNullOrEmpty(term))
@@ -97,7 +100,7 @@ namespace Yelp.Api
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
             string querystring = dic.ToQueryString();
-            return await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
+            return await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct.Value);
         }
 
         /// <summary>
@@ -108,33 +111,43 @@ namespace Yelp.Api
         /// <param name="longitude">User's current longitude.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public async Task<SearchResponse> SearchBusinessesAllAsync(string term, double latitude, double longitude, CancellationToken ct)
+        public Task<SearchResponse> SearchBusinessesAllAsync(string term, double latitude, double longitude, CancellationToken? ct = null)
         {
-            this.ValidateCoordinates(latitude, longitude);
-            await this.ApplyAuthenticationHeaders(ct);
-
-            var dic = new Dictionary<string, object>();
+            SearchParameters search = new SearchParameters();
             if (!string.IsNullOrEmpty(term))
-                dic.Add("term", Uri.EscapeUriString(term));
-            dic.Add("latitude", latitude);
-            dic.Add("longitude", longitude);
-            string querystring = dic.ToQueryString();
-            return await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct);
+                search.Term = term;
+            search.Latitude = latitude;
+            search.Longitude = longitude;
+            return this.SearchBusinessesAllAsync(search, ct);
+        }
+
+        public async Task<SearchResponse> SearchBusinessesAllAsync(SearchParameters search, CancellationToken? ct = null)
+        {
+            if (search == null)
+                throw new ArgumentNullException(nameof(search));
+            if (ct == null)
+                ct = CancellationToken.None;
+
+            this.ValidateCoordinates(search.Latitude, search.Longitude);
+            await this.ApplyAuthenticationHeaders(ct.Value);
+
+            var querystring = search.GetChangedProperties().ToQueryString();
+            return await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct.Value);
         }
 
         #endregion
-
+        
         #region Autocomplete
 
-        /// <summary>
-        /// Searches businesses matching the specified search text used in a client search autocomplete box.
-        /// </summary>
-        /// <param name="term">Text to search businesses with.</param>
-        /// <param name="latitude">User's current latitude.</param>
-        /// <param name="longitude">User's current longitude.</param>
-        /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
-        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
-        /// <returns>AutocompleteResponse with businesses/categories/terms matching the specified parameters.</returns>
+            /// <summary>
+            /// Searches businesses matching the specified search text used in a client search autocomplete box.
+            /// </summary>
+            /// <param name="term">Text to search businesses with.</param>
+            /// <param name="latitude">User's current latitude.</param>
+            /// <param name="longitude">User's current longitude.</param>
+            /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
+            /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+            /// <returns>AutocompleteResponse with businesses/categories/terms matching the specified parameters.</returns>
         public async Task<AutocompleteResponse> AutocompleteAsync(string text, double latitude, double longitude, string locale = null, CancellationToken? ct = null)
         {
             if (ct == null)
