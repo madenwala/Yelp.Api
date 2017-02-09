@@ -96,7 +96,7 @@ namespace Yelp.Api
 
             var dic = new Dictionary<string, object>();
             if(!string.IsNullOrEmpty(term))
-                dic.Add("term", Uri.EscapeUriString(term));
+                dic.Add("term", term);
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
             string querystring = dic.ToQueryString();
@@ -157,11 +157,11 @@ namespace Yelp.Api
             await this.ApplyAuthenticationHeaders(ct.Value);
 
             var dic = new Dictionary<string, object>();
-            dic.Add("text", Uri.EscapeUriString(text));
+            dic.Add("text", text);
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
             if(!string.IsNullOrEmpty(locale))
-                dic.Add("locale", Uri.EscapeUriString(locale));
+                dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
 
             return await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct.Value);
@@ -206,7 +206,7 @@ namespace Yelp.Api
 
             var dic = new Dictionary<string, object>();
             if (!string.IsNullOrEmpty(locale))
-                dic.Add("locale", Uri.EscapeUriString(locale));
+                dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
 
             return await this.GetAsync<ReviewsResponse>(API_VERSION + $"/businesses/{Uri.EscapeUriString(businessID)}/reviews" + querystring, ct.Value);

@@ -21,7 +21,7 @@ namespace Yelp.Api.Models
             try
             {
                 var dt = System.DateTime.Today.AddHours(double.Parse(time.Substring(0, 2))).AddMinutes(double.Parse(time.Substring(2)));
-                return dt.ToString("hh:mmtt").ToLowerInvariant();
+                return dt.ToString("h:mmtt").ToLowerInvariant();
             }
             catch
             {
