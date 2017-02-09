@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <licenseUrl>https://github.com/madenwala/Yelp.API</licenseUrl>
     <projectUrl>https://github.com/madenwala/Yelp.API</projectUrl>
-    <iconUrl>http://www.adenwala.com/wp-content/uploads/2017/02/YelpLogo.jpg</iconUrl>
+    <iconUrl>https://github.com/madenwala/Yelp.API/blob/master/Images/YelpLogo.jpg?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
