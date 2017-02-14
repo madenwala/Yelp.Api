@@ -10,7 +10,7 @@ namespace Yelp.Api
     /// <summary>
     /// Client class to access Yelp API.
     /// </summary>
-    public class Client : ClientBase
+    public sealed class Client : ClientBase
     {
         #region Variables
 
@@ -32,7 +32,7 @@ namespace Yelp.Api
         /// <param name="appSecret">App secret from yelp's developer registration page.</param>
         /// <param name="logger">Optional class instance which applies the ILogger interface to support custom logging within the client.</param>
         public Client(string appID, string appSecret, ILogger logger = null) 
-            : base("https://api.yelp.com", logger)
+            : base(BASE_ADDRESS, logger)
         {
             if (string.IsNullOrWhiteSpace(appID))
                 throw new ArgumentNullException(nameof(appID));
