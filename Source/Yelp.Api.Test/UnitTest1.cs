@@ -31,7 +31,7 @@ namespace Yelp.Api.Test
         [TestMethod]
         public void TestSearch()
         {
-            var response = _client.SearchBusinessesAllAsync("cupcakes", 37.786882, -122.399972, CancellationToken.None).Result;
+            var response = _client.SearchBusinessesAllAsync("cupcakes", 37.786882, -122.399972).Result;
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
@@ -40,7 +40,7 @@ namespace Yelp.Api.Test
         [TestMethod]
         public void TestSearchDelivery()
         {
-            var response = _client.SearchBusinessesWithDeliveryAsync("mex", 37.786882, -122.399972, CancellationToken.None).Result;
+            var response = _client.SearchBusinessesWithDeliveryAsync("mex", 37.786882, -122.399972).Result;
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
@@ -59,7 +59,7 @@ namespace Yelp.Api.Test
         [TestMethod]
         public void TestGetBusiness()
         {
-            var response = _client.GetBusinessAsync("north-india-restaurant-san-francisco", CancellationToken.None).Result;
+            var response = _client.GetBusinessAsync("north-india-restaurant-san-francisco").Result;
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");

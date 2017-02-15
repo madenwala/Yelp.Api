@@ -49,7 +49,7 @@ namespace Yelp.Api
 
         #region Authorization
 
-        private async Task<TokenResponse> GetTokenAsync(CancellationToken ct)
+        private async Task<TokenResponse> GetTokenAsync(CancellationToken ct = default(CancellationToken))
         {
             if (this.Token == null)
             {
@@ -65,7 +65,7 @@ namespace Yelp.Api
             return this.Token;
         }
 
-        private async Task ApplyAuthenticationHeaders(CancellationToken ct)
+        private async Task ApplyAuthenticationHeaders(CancellationToken ct = default(CancellationToken))
         {
             var token = await this.GetTokenAsync(ct);
             if (token?.Error != null)
@@ -86,13 +86,10 @@ namespace Yelp.Api
         /// <param name="longitude">User's current longitude.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public async Task<SearchResponse> SearchBusinessesWithDeliveryAsync(string term, double latitude, double longitude, CancellationToken? ct = null)
+        public async Task<SearchResponse> SearchBusinessesWithDeliveryAsync(string term, double latitude, double longitude, CancellationToken ct = default(CancellationToken))
         {
-            if (ct == null)
-                ct = CancellationToken.None;
-
             this.ValidateCoordinates(latitude, longitude);
-            await this.ApplyAuthenticationHeaders(ct.Value);
+            await this.ApplyAuthenticationHeaders(ct);
 
             var dic = new Dictionary<string, object>();
             if(!string.IsNullOrEmpty(term))
@@ -100,7 +97,7 @@ namespace Yelp.Api
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
             string querystring = dic.ToQueryString();
-            return await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct.Value);
+            return await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
         }
 
         /// <summary>
@@ -111,7 +108,7 @@ namespace Yelp.Api
         /// <param name="longitude">User's current longitude.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public Task<SearchResponse> SearchBusinessesAllAsync(string term, double latitude, double longitude, CancellationToken? ct = null)
+        public Task<SearchResponse> SearchBusinessesAllAsync(string term, double latitude, double longitude, CancellationToken ct = default(CancellationToken))
         {
             SearchParameters search = new SearchParameters();
             if (!string.IsNullOrEmpty(term))
@@ -121,18 +118,16 @@ namespace Yelp.Api
             return this.SearchBusinessesAllAsync(search, ct);
         }
 
-        public async Task<SearchResponse> SearchBusinessesAllAsync(SearchParameters search, CancellationToken? ct = null)
+        public async Task<SearchResponse> SearchBusinessesAllAsync(SearchParameters search, CancellationToken ct = default(CancellationToken))
         {
             if (search == null)
                 throw new ArgumentNullException(nameof(search));
-            if (ct == null)
-                ct = CancellationToken.None;
 
             this.ValidateCoordinates(search.Latitude, search.Longitude);
-            await this.ApplyAuthenticationHeaders(ct.Value);
+            await this.ApplyAuthenticationHeaders(ct);
 
             var querystring = search.GetChangedProperties().ToQueryString();
-            return await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct.Value);
+            return await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct);
         }
 
         #endregion
@@ -148,13 +143,10 @@ namespace Yelp.Api
             /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
             /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
             /// <returns>AutocompleteResponse with businesses/categories/terms matching the specified parameters.</returns>
-        public async Task<AutocompleteResponse> AutocompleteAsync(string text, double latitude, double longitude, string locale = null, CancellationToken? ct = null)
+        public async Task<AutocompleteResponse> AutocompleteAsync(string text, double latitude, double longitude, string locale = null, CancellationToken ct = default(CancellationToken))
         {
-            if (ct == null)
-                ct = CancellationToken.None;
-
             this.ValidateCoordinates(latitude, longitude);
-            await this.ApplyAuthenticationHeaders(ct.Value);
+            await this.ApplyAuthenticationHeaders(ct);
 
             var dic = new Dictionary<string, object>();
             dic.Add("text", text);
@@ -164,7 +156,7 @@ namespace Yelp.Api
                 dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
 
-            return await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct.Value);
+            return await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct);
         }
 
         #endregion
@@ -177,13 +169,10 @@ namespace Yelp.Api
         /// <param name="businessID">ID value of the Yelp business.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>BusinessResponse instance with details of the specified business if found.</returns>
-        public async Task<BusinessResponse> GetBusinessAsync(string businessID, CancellationToken? ct)
+        public async Task<BusinessResponse> GetBusinessAsync(string businessID, CancellationToken ct = default(CancellationToken))
         {
-            if (ct == null)
-                ct = CancellationToken.None;
-
-            await this.ApplyAuthenticationHeaders(ct.Value);            
-            return await this.GetAsync<BusinessResponse>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct.Value);
+            await this.ApplyAuthenticationHeaders(ct);            
+            return await this.GetAsync<BusinessResponse>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct);
         }
 
         #endregion
@@ -197,19 +186,16 @@ namespace Yelp.Api
         /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>ReviewsResponse instance with reviews of the specified business if found.</returns>
-        public async Task<ReviewsResponse> GetReviewsAsync(string businessID, string locale = null, CancellationToken? ct = null)
+        public async Task<ReviewsResponse> GetReviewsAsync(string businessID, string locale = null, CancellationToken ct = default(CancellationToken))
         {
-            if (ct == null)
-                ct = CancellationToken.None;
-
-            await this.ApplyAuthenticationHeaders(ct.Value);
+            await this.ApplyAuthenticationHeaders(ct);
 
             var dic = new Dictionary<string, object>();
             if (!string.IsNullOrEmpty(locale))
                 dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
 
-            return await this.GetAsync<ReviewsResponse>(API_VERSION + $"/businesses/{Uri.EscapeUriString(businessID)}/reviews" + querystring, ct.Value);
+            return await this.GetAsync<ReviewsResponse>(API_VERSION + $"/businesses/{Uri.EscapeUriString(businessID)}/reviews" + querystring, ct);
         }
 
         #endregion
