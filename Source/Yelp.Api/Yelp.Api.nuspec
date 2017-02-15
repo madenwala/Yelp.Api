@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
-      C# Portable Class Library for Yelp (v3) Fusion API from 2017. Works with Windows 10, Windows 8, Windows Phone, ASP.NET, Xamarin (iOS/Android), Mac, and other .NET projects. Yelp's (v3) Fusion API allows you to get the best local business information and user reviews of over million businesses in 32 countries.
+      C# Portable Class Library for Yelp (Fusion API v3 from 2017). Works with Windows 10, Windows 8, Windows Phone, ASP.NET, Xamarin (iOS/Android), Mac, and other .NET projects. Yelp's (v3) Fusion API allows you to get the best local business information and user reviews of over million businesses in 32 countries.
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Yelp Food Restaurants</tags>
