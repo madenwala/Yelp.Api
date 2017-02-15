@@ -8,7 +8,7 @@ using Yelp.Api.Models;
 namespace Yelp.Api
 {
     /// <summary>
-    /// Client class to access Yelp API.
+    /// Client class to access Yelp Fusion v3 API.
     /// </summary>
     public sealed class Client : ClientBase
     {
@@ -49,6 +49,11 @@ namespace Yelp.Api
 
         #region Authorization
 
+        /// <summary>
+        /// Retrieves a token value used for authentication of API calls.
+        /// </summary>
+        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <returns></returns>
         private async Task<TokenResponse> GetTokenAsync(CancellationToken ct = default(CancellationToken))
         {
             if (this.Token == null)
@@ -118,6 +123,12 @@ namespace Yelp.Api
             return this.SearchBusinessesAllAsync(search, ct);
         }
 
+        /// <summary>
+        /// Searches any and all businesses matching the data in the specified search parameter object.
+        /// </summary>
+        /// <param name="search">Container object for all search parameters.</param>
+        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
         public async Task<SearchResponse> SearchBusinessesAllAsync(SearchParameters search, CancellationToken ct = default(CancellationToken))
         {
             if (search == null)
@@ -134,15 +145,15 @@ namespace Yelp.Api
         
         #region Autocomplete
 
-            /// <summary>
-            /// Searches businesses matching the specified search text used in a client search autocomplete box.
-            /// </summary>
-            /// <param name="term">Text to search businesses with.</param>
-            /// <param name="latitude">User's current latitude.</param>
-            /// <param name="longitude">User's current longitude.</param>
-            /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
-            /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
-            /// <returns>AutocompleteResponse with businesses/categories/terms matching the specified parameters.</returns>
+        /// <summary>
+        /// Searches businesses matching the specified search text used in a client search autocomplete box.
+        /// </summary>
+        /// <param name="term">Text to search businesses with.</param>
+        /// <param name="latitude">User's current latitude.</param>
+        /// <param name="longitude">User's current longitude.</param>
+        /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
+        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <returns>AutocompleteResponse with businesses/categories/terms matching the specified parameters.</returns>
         public async Task<AutocompleteResponse> AutocompleteAsync(string text, double latitude, double longitude, string locale = null, CancellationToken ct = default(CancellationToken))
         {
             this.ValidateCoordinates(latitude, longitude);
