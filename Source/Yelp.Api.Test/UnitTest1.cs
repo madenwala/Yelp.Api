@@ -79,7 +79,7 @@ namespace Yelp.Api.Test
         [TestMethod]
         public void TestGetModelChanges()
         {
-            var m = new SearchParameters();
+            var m = new SearchRequest();
             m.Term = "Hello world";
             m.Price = "$";
             var dic = m.GetChangedProperties();

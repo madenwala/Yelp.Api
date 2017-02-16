@@ -115,7 +115,7 @@ namespace Yelp.Api
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
         public Task<SearchResponse> SearchBusinessesAllAsync(string term, double latitude, double longitude, CancellationToken ct = default(CancellationToken))
         {
-            SearchParameters search = new SearchParameters();
+            SearchRequest search = new SearchRequest();
             if (!string.IsNullOrEmpty(term))
                 search.Term = term;
             search.Latitude = latitude;
@@ -129,7 +129,7 @@ namespace Yelp.Api
         /// <param name="search">Container object for all search parameters.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public async Task<SearchResponse> SearchBusinessesAllAsync(SearchParameters search, CancellationToken ct = default(CancellationToken))
+        public async Task<SearchResponse> SearchBusinessesAllAsync(SearchRequest search, CancellationToken ct = default(CancellationToken))
         {
             if (search == null)
                 throw new ArgumentNullException(nameof(search));
