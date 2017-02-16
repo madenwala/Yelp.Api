@@ -21,7 +21,7 @@ Integrating this API is very easy.
 or if you want to perform a more advanced search, use the `SearchParameters` object.
 
 ```c#
-    var request = new Yelp.Api.Models.SearchParameters();
+    var request = new Yelp.Api.Models.SearchRequest();
     request.Latitude = 37.786882;
     request.Longitude = -122.399972;
     request.Term = "cupcakes";
