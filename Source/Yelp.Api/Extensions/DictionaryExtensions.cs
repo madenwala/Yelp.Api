@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Yelp.Api
 {
-    public static class DictionaryExtensions
+    internal static class DictionaryExtensions
     {
-        public static IEnumerable<KeyValuePair<T, S>> ToKeyValuePairList<T, S>(this Dictionary<T, S> dictionary)
+        internal static IEnumerable<KeyValuePair<T, S>> ToKeyValuePairList<T, S>(this Dictionary<T, S> dictionary)
         {
             var list = new List<KeyValuePair<T, S>>();
             foreach (var pair in dictionary)
@@ -14,7 +14,7 @@ namespace Yelp.Api
             return list;
         }
 
-        public static string ToQueryString(this Dictionary<string, object> dictionary)
+        internal static string ToQueryString(this Dictionary<string, object> dictionary)
         {
             string querystring = string.Empty;
             List<string> parameters = new List<string>();

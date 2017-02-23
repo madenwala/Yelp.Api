@@ -90,7 +90,7 @@ namespace Yelp.Api.Models
             set { this.SetProperty(ref _Locale, value); }
         }
 
-        private int _MaxResults;
+        private int _MaxResults = 20;
         /// <summary>
         /// Optional. Number of business results to return. By default, it will return 20. Maximum is 50.
         /// </summary>
@@ -101,7 +101,7 @@ namespace Yelp.Api.Models
             set { this.SetProperty(ref _MaxResults, value); }
         }
 
-        private int _ResultsOffset;
+        private int _ResultsOffset = 0;
         /// <summary>
         /// Optional. Offset the list of returned business results by this amount.
         /// </summary>

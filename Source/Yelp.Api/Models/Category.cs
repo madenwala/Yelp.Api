@@ -22,7 +22,7 @@ namespace Yelp.Api.Models
             if (other == null)
                 return false;
 
-            if (this.Alias.Equals(other.Alias, StringComparison.CurrentCultureIgnoreCase))
+            if (this.Alias != null && this.Alias.Equals(other.Alias, StringComparison.CurrentCultureIgnoreCase))
                 return true;
             else
                 return false;
