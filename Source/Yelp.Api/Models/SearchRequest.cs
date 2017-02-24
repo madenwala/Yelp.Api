@@ -5,7 +5,7 @@ namespace Yelp.Api.Models
     /// <summary>
     /// Container class for all parameters used by the Search API.
     /// </summary>
-    public sealed class SearchRequest : TrackedChangesModelBase
+    public sealed class SearchRequest : TrackedChangesModelBase, ICoordinates
     {
         #region Properties
 
@@ -33,7 +33,7 @@ namespace Yelp.Api.Models
             set { this.SetProperty(ref _Location, value); }
         }
 
-        private double _Latitude;
+        private double _Latitude = double.MinValue;
         /// <summary>
         /// Required if location is not provided. Latitude of the location you want to search near by. 
         /// </summary>
@@ -44,7 +44,7 @@ namespace Yelp.Api.Models
             set { this.SetProperty(ref _Latitude, value); }
         }
 
-        private double _Longitude;
+        private double _Longitude = double.MinValue;
         /// <summary>
         /// Required if location is not provided. Longitude of the location you want to search near by.
         /// </summary>

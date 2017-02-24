@@ -2,7 +2,13 @@
 
 namespace Yelp.Api.Models
 {
-    public class Coordinates
+    public interface ICoordinates
+    {
+        double Latitude { get; set; }
+        double Longitude { get; set; }
+    }
+
+    public class Coordinates : ICoordinates
     {
         public Coordinates()
         {
