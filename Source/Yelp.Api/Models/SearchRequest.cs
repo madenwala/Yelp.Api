@@ -33,7 +33,7 @@ namespace Yelp.Api.Models
             set { this.SetProperty(ref _Location, value); }
         }
 
-        private double _Latitude = double.MinValue;
+        private double _Latitude = double.NaN;
         /// <summary>
         /// Required if location is not provided. Latitude of the location you want to search near by. 
         /// </summary>
@@ -44,7 +44,7 @@ namespace Yelp.Api.Models
             set { this.SetProperty(ref _Latitude, value); }
         }
 
-        private double _Longitude = double.MinValue;
+        private double _Longitude = double.NaN;
         /// <summary>
         /// Required if location is not provided. Longitude of the location you want to search near by.
         /// </summary>

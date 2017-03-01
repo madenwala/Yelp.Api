@@ -102,7 +102,14 @@ namespace Yelp.Api
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
             string querystring = dic.ToQueryString();
-            return await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
+            var response = await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
+
+            // Set distances baased on lat/lon
+            if (response?.Businesses != null && latitude != double.NaN && longitude != double.NaN)
+                foreach (var business in response.Businesses)
+                    business.SetDistanceAway(latitude, longitude);
+
+            return response;
         }
 
         /// <summary>
@@ -138,7 +145,14 @@ namespace Yelp.Api
             await this.ApplyAuthenticationHeaders(ct);
 
             var querystring = search.GetChangedProperties().ToQueryString();
-            return await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct);
+            var response = await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct);
+
+            // Set distances baased on lat/lon
+            if (response?.Businesses != null && search.Latitude != double.NaN && search.Longitude != double.NaN)
+                foreach (var business in response.Businesses)
+                    business.SetDistanceAway(search.Latitude, search.Longitude);
+
+            return response;
         }
 
         #endregion
@@ -167,7 +181,14 @@ namespace Yelp.Api
                 dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
 
-            return await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct);
+            var response = await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct);
+
+            // Set distances baased on lat/lon
+            if (response?.Businesses != null && latitude != double.NaN && longitude != double.NaN)
+                foreach (var business in response.Businesses)
+                    business.SetDistanceAway(latitude, longitude);
+
+            return response;
         }
 
         #endregion
