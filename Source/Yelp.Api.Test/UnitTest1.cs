@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Yelp.Api.Models;
 
@@ -87,6 +89,54 @@ namespace Yelp.Api.Test
             Assert.AreEqual(dic.Count, 2);
             Assert.IsTrue(dic.ContainsKey("term"));
             Assert.IsTrue(dic.ContainsKey("price"));
+        }
+
+        #endregion
+
+        #region GraphQL Methods *REQUIRES APP TO BE IN BETA*
+
+        [TestMethod]
+        public void TestGetGraphQlAsync()
+        {
+            List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
+            var response = _client.GetGraphQlAsync(businessIds).Result;
+
+            Assert.AreNotSame(null, response);
+            Assert.AreSame(null, response?.FirstOrDefault().Error, $"Response error returned {response?.FirstOrDefault().Error?.Code} - {response?.FirstOrDefault().Error?.Description}");
+        }
+
+        [TestMethod]
+        public void TestGetGraphQlInChunksAsync()
+        {
+            List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
+            var response = _client.GetGraphQlInChunksAsync(businessIds).Result;
+
+            Assert.AreNotSame(null, response);
+            Assert.AreSame(null, response?.FirstOrDefault().Error, $"Response error returned {response?.FirstOrDefault().Error?.Code} - {response?.FirstOrDefault().Error?.Description}");
+        }
+
+        [TestMethod]
+        public void TestGetGraphQlAsyncInParallel()
+        {
+            List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
+            var response = _client.GetGraphQlAsyncInParallel(businessIds);
+
+            Assert.AreNotSame(null, response);
+            Assert.AreSame(null, response?.FirstOrDefault().Result.FirstOrDefault().Error,
+                $"Response error returned {response?.FirstOrDefault().Result.FirstOrDefault().Error?.Code} - {response?.FirstOrDefault().Result.FirstOrDefault().Error?.Description}");
+        }
+
+        [TestMethod]
+        public void TestProcessResultsOfGetGraphQlAsyncInParallel()
+        {
+            List<string> businessIds = new List<string>();
+            businessIds.Add("north-india-restaurant-san-francisco");
+            var response = _client.GetGraphQlAsyncInParallel(businessIds);
+
+            var results = _client.ProcessResultsOfGetGraphQlAsyncInParallel(response);
+
+            Assert.AreNotSame(null, results);
+            Assert.AreSame(null, results?.FirstOrDefault().Error, $"Response error returned {results?.FirstOrDefault().Error?.Code} - {results?.FirstOrDefault().Error?.Description}");
         }
 
         #endregion
