@@ -68,6 +68,16 @@ namespace Yelp.Api.Test
         }
 
         [TestMethod]
+        public void TestGetBusinessAsyncInParallel()
+        {
+            List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
+            var response = _client.GetBusinessAsyncInParallel(businessIds).Result;
+
+            Assert.AreNotSame(null, response);
+            Assert.AreSame(null, response?.FirstOrDefault().Error, $"Response error returned {response?.FirstOrDefault().Error?.Code} - {response?.FirstOrDefault().Error?.Description}");
+        }
+
+        [TestMethod]
         public void TestGetReviews()
         {
             var response = _client.GetReviewsAsync("north-india-restaurant-san-francisco").Result;

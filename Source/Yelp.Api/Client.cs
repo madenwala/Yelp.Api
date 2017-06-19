@@ -21,6 +21,7 @@ namespace Yelp.Api
 
         private const string BASE_ADDRESS = "https://api.yelp.com";
         private const string API_VERSION = "/v3";
+        private const int FIRST_TIME_WAIT = 500;
 
         /// <summary>
         /// The default fragment used by GraphQL calls.  This is not a variable that can be set, it is only
@@ -248,6 +249,65 @@ hours {
         {
             await this.ApplyAuthenticationHeaders(ct);            
             return await this.GetAsync<BusinessResponse>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct);
+        }
+
+        /// <summary>
+        /// This method will retreive a list of Businesses from Yelp with separate calls.
+        /// However, those calls will be made in parallel so while many calls will be made, the total
+        /// results should be fast.
+        /// Written in part with: https://stackoverflow.com/a/39796934/311444
+        /// </summary>
+        /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
+        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
+        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <returns>Returns an IEnumerable of BusinessResponses for each submitted businessId, wrapped in a Task.</returns>
+        public async Task<IEnumerable<BusinessResponse>> GetBusinessAsyncInParallel(IEnumerable<string> businessIds, int semaphoreSlimMax = 10, CancellationToken ct = default(CancellationToken))
+        {
+            var tasks = new List<Task<BusinessResponse>>();
+
+            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
+
+            bool firstTime = true;
+            foreach (var id in businessIds)
+            {
+                await semaphoreSlim.WaitAsync(ct);
+                tasks.Add(ProcessSemaphoreSlimsForGetBusinessAsync(semaphoreSlim, id, ct));
+
+                // If first time, sleep so the oAuth token can be retreived before making all the other calls.
+                if (firstTime)
+                {
+                    Task.Delay(FIRST_TIME_WAIT, ct).Wait(ct);
+                    firstTime = false;
+                }
+            }
+
+            return Task.WhenAll(tasks).Result;
+        }
+
+        /// <summary>
+        /// This method processes the Semaphore wrapper around GetBusinessAsync calls.
+        /// Written in part with: https://stackoverflow.com/a/39796934/311444
+        /// </summary>
+        /// <param name="semaphoreSlim">The Semaphore being used by the calling method.</param>
+        /// <param name="businessId">The Yelp Business Id to request from the GetBusiness endpoint.</param>
+        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <returns>The BusinessResponses from the GetBusiness endpoint wrapped in a Task.</returns>
+        private async Task<BusinessResponse> ProcessSemaphoreSlimsForGetBusinessAsync(SemaphoreSlim semaphoreSlim, string businessId, CancellationToken ct = default(CancellationToken))
+        {
+            Task<BusinessResponse> result;
+
+            try
+            {
+                result = GetBusinessAsync(businessId, ct);
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+
+            await result;
+
+            return result.Result;
         }
 
         #endregion
