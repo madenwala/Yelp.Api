@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Yelp.Api.Models;
 
@@ -63,6 +65,16 @@ namespace Yelp.Api.Test
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
+        }
+
+        [TestMethod]
+        public void TestGetBusinessAsyncInParallel()
+        {
+            List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
+            var response = _client.GetBusinessAsyncInParallel(businessIds).Result;
+
+            Assert.AreNotSame(null, response);
+            Assert.AreSame(null, response?.FirstOrDefault().Error, $"Response error returned {response?.FirstOrDefault().Error?.Code} - {response?.FirstOrDefault().Error?.Description}");
         }
 
         [TestMethod]
