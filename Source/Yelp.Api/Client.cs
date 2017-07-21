@@ -105,7 +105,7 @@ namespace Yelp.Api
             var response = await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
 
             // Set distances baased on lat/lon
-            if (response?.Businesses != null && latitude != double.NaN && longitude != double.NaN)
+            if (response?.Businesses != null && !double.IsNaN(latitude) && !double.IsNaN(longitude))
                 foreach (var business in response.Businesses)
                     business.SetDistanceAway(latitude, longitude);
 
@@ -148,7 +148,7 @@ namespace Yelp.Api
             var response = await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct);
 
             // Set distances baased on lat/lon
-            if (response?.Businesses != null && search.Latitude != double.NaN && search.Longitude != double.NaN)
+            if (response?.Businesses != null && !double.IsNaN(search.Latitude) && !double.IsNaN(search.Longitude))
                 foreach (var business in response.Businesses)
                     business.SetDistanceAway(search.Latitude, search.Longitude);
 
@@ -184,7 +184,7 @@ namespace Yelp.Api
             var response = await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct);
 
             // Set distances baased on lat/lon
-            if (response?.Businesses != null && latitude != double.NaN && longitude != double.NaN)
+            if (response?.Businesses != null && !double.IsNaN(latitude) && !double.IsNaN(longitude))
                 foreach (var business in response.Businesses)
                     business.SetDistanceAway(latitude, longitude);
 
