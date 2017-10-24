@@ -12,8 +12,8 @@ namespace Yelp.Api.Models
     {
         public Coordinates()
         {
-            this.Latitude = double.MinValue;
-            this.Longitude = double.MinValue;
+            this.Latitude = double.NaN;
+            this.Longitude = double.NaN;
         }
 
         [JsonProperty("latitude")]
