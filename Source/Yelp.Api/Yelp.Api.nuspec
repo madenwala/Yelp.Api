@@ -12,8 +12,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>$description$</summary>
     <description>$description$</description>
-    <releaseNotes>Fixed bug when converting businesses that have no coordinates from Yelp.</releaseNotes>
-    <copyright>Copyright 2017</copyright>
+    <releaseNotes>Updated authentication to work with the new Yelp API authentication.</releaseNotes>
+    <copyright>Copyright 2018</copyright>
     <tags>Yelp Food Restaurants</tags>
   </metadata>
 </package>
