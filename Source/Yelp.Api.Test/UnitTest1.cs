@@ -10,10 +10,9 @@ namespace Yelp.Api.Test
     {
         #region Variables
 
-        private const string APP_ID = "39ukJIrbqD1Pk5V16B5weA";
-        private const string APP_SECRET = "pDgLtCkYCRAnTpI9TP15xRMV4yeX75UMud05z7Cksm0KuCpw5qpQLMfVWzmOSBKC";
+        private const string API_KEY = "pDgLtCkYCRAnTpI9TP15xRMV4yeX75UMud05z7Cksm0KuCpw5qpQLMfVWzmOSBKC";
 
-        private Client _client;
+        private readonly Client _client;
 
         #endregion
 
@@ -21,7 +20,7 @@ namespace Yelp.Api.Test
 
         public UnitTest1()
         {
-            _client = new Client(APP_ID, APP_SECRET);
+            _client = new Client(API_KEY);
         }
 
         #endregion

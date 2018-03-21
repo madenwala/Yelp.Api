@@ -13,7 +13,7 @@ Integrating this API is very easy.
 3. Call the API via the `Client` object in your code. See below for examples:
 
 ```c#
-    var client = new Yelp.Api.Client("APP_ID", "APP_SECRET");
+    var client = new Yelp.Api.Client("API_KEY");
     var results = await client.SearchBusinessesAllAsync("cupcakes", 37.786882, -122.399972);
 ```
 
@@ -27,6 +27,6 @@ or if you want to perform a more advanced search, use the `SearchParameters` obj
     request.MaxResults = 40;
     request.OpenNow = true;
 
-    var client = new Yelp.Api.Client("APP_ID", "APP_SECRET");
+    var client = new Yelp.Api.Client("API_KEY");
     var results = await client.SearchBusinessesAllAsync(request);
 ```
