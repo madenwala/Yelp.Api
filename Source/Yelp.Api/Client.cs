@@ -339,9 +339,12 @@ hours {
             {
                 return new List<BusinessResponse>();
             }
+
             var content = new StringContent(CreateJsonRequestForGraphQl(businessIds, fragment), Encoding.UTF8, "application/x-www-form-urlencoded");
+
             ApplyAuthenticationHeaders(ct);
             var jsonResponse = await PostAsync(API_VERSION + "/graphql", ct, content);
+
             return ConvertJsonToBusinesResponses(jsonResponse);
         }
 
@@ -355,6 +358,7 @@ hours {
         {
             string body = "{ ";
             int x = 1;
+
             foreach (var businessId in businessIds)
             {
                 body += $@"
@@ -368,6 +372,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
     {fragment}
 }} 
 ";
+
             return body;
         }
 
@@ -412,12 +417,16 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
             CancellationToken ct = default(CancellationToken))
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
+
             var graphResults = GetGraphQlAsyncInParallel(businessIds, chunkSize, fragment, semaphoreSlimMax, ct);
+
             var businessResponseLists = await Task.WhenAll(graphResults);
+
             foreach (var businessResponseList in businessResponseLists)
             {
                 businessResponses.AddRange(businessResponseList);
             }
+
             return businessResponses;
         }
 
@@ -453,22 +462,29 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
             int page = 0;
             int totalBusinessIds = businessIds.Count;
             int maxPage = (totalBusinessIds / chunkSize) + 1;
+
             var tasks = new List<Task<IEnumerable<BusinessResponse>>>();
+
             SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
+
             bool firstTime = true;
             do
             {
                 semaphoreSlim.WaitAsync(ct);
+
                 var idSubset = businessIds.Skip(page * chunkSize).Take(chunkSize).ToList();
                 tasks.Add(ProcessSemaphoreSlimsForGraphQl(semaphoreSlim, idSubset, ct: ct));
+
                 // If first time, sleep so the oAuth token can be retreived before making all the other calls.
                 if (firstTime)
                 {
                     Task.Delay(FIRST_TIME_WAIT, ct).Wait(ct);
                     firstTime = false;
                 }
+
                 page++;
             } while (page < maxPage);
+
             return tasks;
         }
 
@@ -488,6 +504,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
             CancellationToken ct = default(CancellationToken))
         {
             Task<IEnumerable<BusinessResponse>> result;
+
             try
             {
                 result = GetGraphQlAsync(businessIds, fragment, ct);
@@ -496,7 +513,9 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
             {
                 semaphoreSlim.Release();
             }
+
             await result;
+
             return result.Result;
         }
 
@@ -513,10 +532,12 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         public IEnumerable<BusinessResponse> ProcessResultsOfGetGraphQlAsyncInParallel(List<Task<IEnumerable<BusinessResponse>>> tasks)
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
+
             foreach (var task in tasks)
             {
                 businessResponses.AddRange(task.Result);
             }
+
             return businessResponses;
         }
 
