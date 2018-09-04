@@ -1,0 +1,38 @@
+﻿@using Yelp.Api.Models
+@model BusinessResponse
+
+<div class="businessDiv @Model.Id dislike">
+    <div class="row" style="border-top: 1px solid #e6e6e6; padding-top: 10px;">
+        <div class="col-md-1">
+            @{
+                string image = Model.ImageUrl ?? Model.Photos.FirstOrDefault();
+            }
+            <a href="@Model.Url"><img src="@image" style="width: 90px; height: 90px;" class="img-rounded" /></a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Model.Url">@Model.Name</a><br />
+            <img src="~/images/yelp_stars/@(Model.Rating).png" /> | @Model.ReviewCount reviews<br />
+            @Model.Price -
+            @for (int x = 0; x < Model.Categories.Length; x++)
+            {
+                string category = x < Model.Categories.Length - 1 ? $"{Model.Categories[x].Title}, " : $"{Model.Categories[x].Title}";
+                @category
+            }
+            <br />
+            @if (Model.DistanceAway > 0)
+            {
+                @:@Model.DistanceAway miles
+            }
+        </div>
+        <div class="col-md-4">
+            @Model.Location.Address1<br />
+            @if (!string.IsNullOrEmpty(Model.Location.Address2))
+            {
+                @Model.Location.Address2<br />
+            }
+            @Model.Location.City, @Model.Location.State @Model.Location.ZipCode<br />
+            @Model.DisplayPhone<br />
+            <a href="@Model.Url"><img src="~/images/yelp_logo/Yelp_trademark_RGB_outline.png" style="width: 100px; height: 64px;" /></a>
+        </div>
+    </div>
+</div>
