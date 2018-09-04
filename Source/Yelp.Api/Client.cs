@@ -232,12 +232,15 @@ hours {
         public async Task<IEnumerable<BusinessResponse>> GetBusinessAsyncInParallel(IEnumerable<string> businessIds, int semaphoreSlimMax = 10, CancellationToken ct = default(CancellationToken))
         {
             var tasks = new List<Task<BusinessResponse>>();
+
             SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
+
             bool firstTime = true;
             foreach (var id in businessIds)
             {
                 await semaphoreSlim.WaitAsync(ct);
                 tasks.Add(ProcessSemaphoreSlimsForGetBusinessAsync(semaphoreSlim, id, ct));
+
                 // If first time, sleep so the oAuth token can be retreived before making all the other calls.
                 if (firstTime)
                 {
@@ -245,6 +248,7 @@ hours {
                     firstTime = false;
                 }
             }
+
             return Task.WhenAll(tasks).Result;
         }
 
@@ -259,6 +263,7 @@ hours {
         private async Task<BusinessResponse> ProcessSemaphoreSlimsForGetBusinessAsync(SemaphoreSlim semaphoreSlim, string businessId, CancellationToken ct = default(CancellationToken))
         {
             Task<BusinessResponse> result;
+
             try
             {
                 result = GetBusinessAsync(businessId, ct);
@@ -267,7 +272,9 @@ hours {
             {
                 semaphoreSlim.Release();
             }
+
             await result;
+
             return result.Result;
         }
 
