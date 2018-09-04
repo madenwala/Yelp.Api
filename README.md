@@ -1,14 +1,14 @@
-# Yelp.API
-C# Portable Class Library for Yelp (v3) Fusion API works with Windows 10, Windows 8, Windows Phone, ASP.NET, Xamarin (iOS/Android), Mac, and other .NET projects. Yelp's (v3) Fusion API allows you to get the best local business information and user reviews of over million businesses in 32 countries.
+# Yelp.API.Web
+C# Web Library for Yelp (Fusion API v3 from 2017).  Currently targets .NETCoreApp 1.0 and 1.1.  Yelp's (v3) Fusion API allows you to get the best local business information and user reviews of over million businesses in 32 countries.
 
-## How to use the Yelp API in your .NET based app
+## How to use the Yelp API in your .NET based Web App
 
 Integrating this API is very easy.
 
 1. **[Register](https://www.yelp.com/developers/v3/manage_app)** yourself with Yelp's developer program
-2. Add the **[Yelp API client from NuGet](https://www.nuget.org/packages/Yelp.Api/)** to your project or register in the NuGet console with:
+2. Add the **[Yelp Api Web client from NuGet](https://www.nuget.org/packages/Yelp.Api.Web/)** to your project or register in the NuGet console with:
 
-	`Install-Package Yelp.API`
+	`Install-Package Yelp.Api.Web`
 
 3. Call the API via the `Client` object in your code. See below for examples:
 
@@ -30,3 +30,5 @@ or if you want to perform a more advanced search, use the `SearchParameters` obj
     var client = new Yelp.Api.Client("API_KEY");
     var results = await client.SearchBusinessesAllAsync(request);
 ```
+
+4. Look for more examples in the Example project.
