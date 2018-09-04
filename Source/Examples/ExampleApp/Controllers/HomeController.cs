@@ -86,5 +86,24 @@ namespace ExampleApp.Controllers
 
             return View("Result", businessResponses);
         }
+
+        public IActionResult TestSearchBusinessesAllAsync()
+        {
+            var request = new SearchRequest
+            {
+                MaxResults = 50,
+
+                Categories = "restaurants",
+                Location = "Redwood City, CA 94065",
+                OpenNow = false,
+                Price = null,
+                Radius = 8047,
+                Term = null
+            };
+
+            var searchResponse = _client.SearchBusinessesAllAsync(request).Result;
+
+            return View("Result", searchResponse.Businesses);
+        }
     }
 }

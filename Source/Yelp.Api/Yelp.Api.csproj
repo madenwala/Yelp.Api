@@ -2,13 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <Version>1.3.0</Version>
+    <Version>1.3.2</Version>
     <Description>A library to be used by websites to interact with Yelp Fusion (v3.0) API.</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Michael Lipinski based off of Mohammed Adenwala's Yelp.Api</Authors>
     <PackageProjectUrl>https://github.com/Pinski/Yelp.Api.Web</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Pinski/Yelp.Api.Web</RepositoryUrl>
-    <PackageReleaseNotes>First release as a Web version of Yelp.Api.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.3.2 - Friday, July 15th, 2017
+Fix bug when converting businesses that have null coordinates from Yelp.
+
+1.3.1 - Monday, June 19, 2017
+Added IsSpecialFlag to BusinessResponse model.
+
+1.3.0 - Monday, June 19, 2017
+First release as a Web version of Yelp.Api.</PackageReleaseNotes>
     <PackageIconUrl>https://www.yelpblog.com/wp-content/themes/yelpblog/images/yelp-avatar.png</PackageIconUrl>
   </PropertyGroup>
 

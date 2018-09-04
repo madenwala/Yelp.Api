@@ -5,10 +5,20 @@
 <br />
 <br />
 
+<h3>Get Businesses</h3>
 <ul>
     <li><a asp-action="TestGetBusinessAsync">Test GetBusinessAsync - 30 restaurants retrieved one a time in about 30-33 seconds.</a></li>
     <li><a asp-action="TestGetBusinessAsyncInParallel">Test GetBusinessAsyncInParallel - 30 restaurants retrieved in parallel in about 2-3 seconds.</a></li>
+</ul>
+
+<h3>Get Businesses GraphQL</h3>
+<ul>
     <li><a asp-action="TestGetGraphQlAsync">Test GetGraphQlAsync - 10 restaurants retrieved via one GraphQL call in about 3-4 seconds.</a></li>
     <li><a asp-action="TestGetGraphQlInChunksAsync">Test GetGraphQlInChunksAsync - 30 restaurants retrieved via multiple GraphQL calls (5 restaurants per call) made one at a time in about 3-4 seconds.</a></li>
     <li><a asp-action="TestGetGraphQlAsyncInParallel">Test GetGraphQlAsyncInParallel - 30 restaurants retrieved via multiple GraphQL calls (5 restaurants per call) made in parallel in about 2-3 seconds.</a></li>
+</ul>
+
+<h3>Search</h3>
+<ul>
+    <li><a asp-action="TestSearchBusinessesAllAsync">Test SearchBusinessesAllAsync - Get the maximum amount of restaurants (50) with a particular search request.</a></li>
 </ul>
