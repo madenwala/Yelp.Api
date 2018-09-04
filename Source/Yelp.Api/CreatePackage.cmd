@@ -1,1 +1,0 @@
-nuget pack Yelp.Api.csproj -Build -Properties Configuration=Release
