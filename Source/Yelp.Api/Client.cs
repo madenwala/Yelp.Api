@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Yelp.Api.Models;
 
 namespace Yelp.Api
@@ -324,6 +325,9 @@ hours {
         /// <summary>
         /// This method makes a single request to the Yelp GraphQL endpoint.  
         /// It formats the entire list of businessIds and the search fragment into the proper json to make the request.
+        /// *** NOTE ***
+        /// The GraphQL endpoint is currently only available in the Yelp Fusion (3.0) Api Beta.  
+        /// To use these endpoints, you have to go to Manage App and opt into the Beta.
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
@@ -338,7 +342,7 @@ hours {
             var content = new StringContent(CreateJsonRequestForGraphQl(businessIds, fragment), Encoding.UTF8, "application/x-www-form-urlencoded");
             ApplyAuthenticationHeaders(ct);
             var jsonResponse = await PostAsync(API_VERSION + "/graphql", ct, content);
-            return FormatAndParseResponseFromGraphQl(jsonResponse, businessIds.Count);
+            return ConvertJsonToBusinesResponses(jsonResponse);
         }
 
         /// <summary>
@@ -368,29 +372,16 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         }
 
         /// <summary>
-        /// A private method that takes the response from the GraphQL endpoint and does some string formatting first
-        /// before parsing into a list of BusinessResponse objects.
-        /// The JSON response from the endpoint has some extra text in it like aliases, data, the list not being an array, etc.
+        /// A private method that takes the response from the GraphQL endpoint and converts it into a list of BusinessResponse objects.
         /// </summary>
         /// <param name="jsonResponse">The JSON response from the GraphQL endpoint.</param>
-        /// <param name="amountOfBusinessesRequested">The amount of businesses submitted to the GraphQL endpoint.</param>
         /// <returns>A list of BusinessResponses parsed from the JSON response string.</returns>
-        private IEnumerable<BusinessResponse> FormatAndParseResponseFromGraphQl(string jsonResponse, int amountOfBusinessesRequested)
+        private IEnumerable<BusinessResponse> ConvertJsonToBusinesResponses(string jsonResponse)
         {
-            // Remove the first 9 characters from the JSON: '{"data": {'
-            jsonResponse = jsonResponse.Remove(0, 10);
-            // Insert a '[' to start an array of values.
-            jsonResponse = jsonResponse.Insert(0, "[");
-            // Remove a bX for each item retrieved.
-            for (int i = 1; i <= amountOfBusinessesRequested; i++)
-            {
-                jsonResponse = jsonResponse.Replace($"\"b{i}\": ", string.Empty);
-            }
-            // Remove two trailing '}' to match the beginning
-            jsonResponse = jsonResponse.Remove(jsonResponse.Length - 2, 2);
-            // Insert a ']' to end the array of values.
-            jsonResponse = jsonResponse.Insert(jsonResponse.Length, "]");
-            return JsonConvert.DeserializeObject<IEnumerable<BusinessResponse>>(jsonResponse);
+            var jObject = JObject.Parse(jsonResponse);
+            var businessResponseDictionary = jObject["data"].ToObject<Dictionary<string, BusinessResponse>>();
+
+            return businessResponseDictionary.Select(keyValuePair => keyValuePair.Value).ToList();
         }
 
         #endregion
@@ -403,6 +394,9 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// to the GraphQL endpoint separately.  All results will be waited for, stitched back together, and returned.
         /// This will make more calls to the GraphQL endpoint than GetGraphQlAsync, but each call will be faster.  However, all of these calls
         /// will be made in series and the final results of all calls will be returned.
+        /// *** NOTE ***
+        /// The GraphQL endpoint is currently only available in the Yelp Fusion (3.0) Api Beta.  
+        /// To use these endpoints, you have to go to Manage App and opt into the Beta.
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="chunkSize">How many businesses to submit on each request.</param>
@@ -436,6 +430,9 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// will be made in series and the final results of all calls will be returned.
         /// The calls are done in parallel so it'll be faster than both GetGraphQlAsync and GetGraphQlInChunksAsync.
         /// Written in part with: https://stackoverflow.com/a/39796934/311444
+        /// *** NOTE ***
+        /// The GraphQL endpoint is currently only available in the Yelp Fusion (3.0) Api Beta.  
+        /// To use these endpoints, you have to go to Manage App and opt into the Beta.
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="chunkSize">How many businesses to submit on each request.</param>
@@ -507,6 +504,9 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// This method is a utility method for processing the results of the GetGraphQlInParallel function.  It 
         /// takes all of the completed tasks, gets the Lists of BusinessResponses out of them, and puts them all into one list.
         /// Call this AFTER you have awaited GetGraphQlInParallel.
+        /// *** NOTE ***
+        /// The GraphQL endpoint is currently only available in the Yelp Fusion (3.0) Api Beta.  
+        /// To use these endpoints, you have to go to Manage App and opt into the Beta.
         /// </summary>
         /// <param name="tasks">List of Tasks of IEnumerable BusinessResponses from GetGraphQlInParallel.</param>
         /// <returns>The complete list of all BusinessResponses from the GraphQL.</returns>
