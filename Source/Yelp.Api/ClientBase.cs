@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -164,8 +164,8 @@ namespace Yelp.Api
                     "---------------------------------",
                     request.RequestUri.OriginalString,
                     request.Method.Method,
-                    request.Headers?.ToString(),
-                    request.Content?.ReadAsStringAsync().Result
+                    request.Headers,
+                    request.Content
                 );
                 this.Log(message);
             }
