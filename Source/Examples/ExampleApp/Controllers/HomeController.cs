@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,11 +61,11 @@ namespace ExampleApp.Controllers
             return View("Result", businessResponses);
         }
 
-        // 10 restaurants retrieved via one GraphQL call in about 3-4 seconds.
+        // 30 restaurants retrieved via one GraphQL call in about 4-5 seconds.
         public IActionResult TestGetGraphQlAsync()
         {
-            // More than 10 items at a time seems to crash Yelp's API.  Nothing I can do about that.
-            IEnumerable<BusinessResponse> businessResponses = _client.GetGraphQlAsync(_yelpIds.Take(10).ToList()).Result;
+            // More than 10 items at a time used to crash Yelp's API.  Seems like they fixed it because now I can send at least 30 at a time.
+            IEnumerable<BusinessResponse> businessResponses = _client.GetGraphQlAsync(_yelpIds.ToList()).Result;
 
             return View("Result", businessResponses);
         }
