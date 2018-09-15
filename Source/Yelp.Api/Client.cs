@@ -390,14 +390,14 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// <returns>A list of all BusinessResponses returned by every call to the GraphQL endpoint.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsync(
             List<string> businessIds,
-            int chunkSize = 5,
+            int chunkSize = 10,
             string fragment = DEFAULT_FRAGMENT,
             int semaphoreSlimMax = 10,
             CancellationToken ct = default(CancellationToken))
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
 
-            var graphResults = GetGraphQlAsyncInParallel(businessIds, chunkSize, fragment, semaphoreSlimMax, ct);
+            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, chunkSize, fragment, semaphoreSlimMax, ct);
 
             var businessResponseLists = await Task.WhenAll(graphResults);
 
@@ -431,9 +431,9 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// A list of Tasks where each Task contains an IEnumerable of BusinessResponses.  The caller will have to await for the Tasks 
         /// to return to get the results.
         /// </returns>
-        public List<Task<IEnumerable<BusinessResponse>>> GetGraphQlAsyncInParallel(
+        public List<Task<IEnumerable<BusinessResponse>>> GetGraphQlInChunksAsyncInParallel(
             List<string> businessIds,
-            int chunkSize = 5,
+            int chunkSize = 10,
             string fragment = DEFAULT_FRAGMENT,
             int semaphoreSlimMax = 10,
             CancellationToken ct = default(CancellationToken))
@@ -499,7 +499,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         }
 
         /// <summary>
-        /// This method is a utility method for processing the results of the GetGraphQlInParallel function.  It 
+        /// This method is a utility method for processing the results of the GetGraphQlInChunksAsyncInParallel function.  It 
         /// takes all of the completed tasks, gets the Lists of BusinessResponses out of them, and puts them all into one list.
         /// Call this AFTER you have awaited GetGraphQlInParallel.
         /// *** NOTE ***
@@ -508,7 +508,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// </summary>
         /// <param name="tasks">List of Tasks of IEnumerable BusinessResponses from GetGraphQlInParallel.</param>
         /// <returns>The complete list of all BusinessResponses from the GraphQL.</returns>
-        public IEnumerable<BusinessResponse> ProcessResultsOfGetGraphQlAsyncInParallel(List<Task<IEnumerable<BusinessResponse>>> tasks)
+        public IEnumerable<BusinessResponse> ProcessResultsOfGetGraphQlInChunksAsyncInParallel(List<Task<IEnumerable<BusinessResponse>>> tasks)
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
 
