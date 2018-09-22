@@ -39,6 +39,8 @@ namespace ExampleApp.Controllers
             return View();
         }
 
+        #region GetBusiness
+
         // 30 restaurants retrieved one a time in about 30-33 seconds.
         public IActionResult TestGetBusinessAsync()
         {
@@ -61,6 +63,10 @@ namespace ExampleApp.Controllers
             return View("Result", businessResponses);
         }
 
+        #endregion
+
+        #region GraphQL
+
         // 30 restaurants retrieved via one GraphQL call in about 4-5 seconds.
         public IActionResult TestGetGraphQlAsync()
         {
@@ -81,11 +87,12 @@ namespace ExampleApp.Controllers
         // 30 restaurants retrieved via multiple GraphQL calls made in parallel in about 2-3 seconds.
         public IActionResult TestGetGraphQlInChunksAsyncInParallel()
         {
-            IEnumerable<Task<IEnumerable<BusinessResponse>>> businessResponseTasks = _client.GetGraphQlInChunksAsyncInParallel(_yelpIds.ToList(), chunkSize: 10, semaphoreSlimMax: 10);
-            IEnumerable<BusinessResponse> businessResponses = _client.ProcessResultsOfGetGraphQlInChunksAsyncInParallel(businessResponseTasks.ToList());
+            IEnumerable<BusinessResponse> businessResponses = _client.GetGraphQlInChunksAsyncInParallel(_yelpIds.ToList()).Result;
 
             return View("Result", businessResponses);
         }
+
+        #endregion
 
         public IActionResult TestSearchBusinessesAllAsync()
         {

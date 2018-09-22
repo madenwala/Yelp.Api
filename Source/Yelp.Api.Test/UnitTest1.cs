@@ -135,20 +135,8 @@ namespace Yelp.Api.Test
             var response = _client.GetGraphQlInChunksAsyncInParallel(businessIds);
 
             Assert.AreNotSame(null, response);
-            Assert.AreSame(null, response?.FirstOrDefault().Result.FirstOrDefault().Error,
-                $"Response error returned {response?.FirstOrDefault().Result.FirstOrDefault().Error?.Code} - {response?.FirstOrDefault().Result.FirstOrDefault().Error?.Description}");
-        }
-
-        [TestMethod]
-        public void TestProcessResultsOfGetGraphQlInChunksAsyncInParallel()
-        {
-            List<string> businessIds = new List<string> {"north-india-restaurant-san-francisco"};
-
-            var response = _client.GetGraphQlInChunksAsyncInParallel(businessIds);
-
-            var results = _client.ProcessResultsOfGetGraphQlInChunksAsyncInParallel(response);
-            Assert.AreNotSame(null, results);
-            Assert.AreSame(null, results?.FirstOrDefault().Error, $"Response error returned {results?.FirstOrDefault().Error?.Code} - {results?.FirstOrDefault().Error?.Description}");
+            Assert.AreSame(null, response.Result.FirstOrDefault()?.Error,
+                $"Response error returned {response.Result.FirstOrDefault()?.Error?.Code} - {response.Result.FirstOrDefault()?.Error?.Description}");
         }
 
         #endregion

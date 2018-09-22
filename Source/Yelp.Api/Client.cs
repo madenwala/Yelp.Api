@@ -374,10 +374,10 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
 
         /// <summary>
         /// This method runs in series, for a parallel version please see GetGraphQlAsyncInParallel.
-        /// This method will take the list of businessIds and divide them into chunks.  These chunks will be submitted
-        /// to the GraphQL endpoint separately.  All results will be waited for, stitched back together, and returned.
-        /// This will make more calls to the GraphQL endpoint than GetGraphQlAsync, but each call will be faster.  However, all of these calls
-        /// will be made in series and the final results of all calls will be returned.
+        /// This method will take the list of businessIds and divide them into chunks.
+        /// These chunks will be submitted to the GraphQL endpoint separately one after the other.  
+        /// This will make more calls to the GraphQL endpoint than GetGraphQlAsync, but each call will only be a portion of the
+        /// total businesses so it should run faster than GetGraphQlAsync.  
         /// *** NOTE ***
         /// The GraphQL endpoint is currently only available in the Yelp Fusion (3.0) Api Beta.  
         /// To use these endpoints, you have to go to Manage App and opt into the Beta.
@@ -410,14 +410,13 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         }
 
         /// <summary>
-        /// This method runs in parallel, for a series version please see GetGraphQlInChunksAsync.
-        /// This method will take the list of businessIds and divide them into chunks.  These chunks will be submitted
-        /// to the GraphQL endpoint separately.  The Tasks of the requests will be put into a list for the user to await.
-        /// This allows the call to be parallelizable.
-        /// This will make more calls to the GraphQL endpoint than GetGraphQlAsync, but each call will be faster.  However, all of these calls
-        /// will be made in series and the final results of all calls will be returned.
+        /// This method runs in parallel, for a version that runs in series please see GetGraphQlInChunksAsync.
+        /// This method will take the list of businessIds and divide them into chunks.
+        /// They will be submitted in parallel as defined by the size of the SemaphoreSlim.
+        /// This will make more calls to the GraphQL endpoint than GetGraphQlAsync, but each call will only be a portion of the
+        /// total businesses so it should run faster than GetGraphQlAsync.  
         /// The calls are done in parallel so it'll be faster than both GetGraphQlAsync and GetGraphQlInChunksAsync.
-        /// Written in part with: https://stackoverflow.com/a/39796934/311444
+        /// Written in part with: https://stackoverflow.com/a/39796934/311444 and https://stackoverflow.com/a/23316722/311444
         /// *** NOTE ***
         /// The GraphQL endpoint is currently only available in the Yelp Fusion (3.0) Api Beta.  
         /// To use these endpoints, you have to go to Manage App and opt into the Beta.
@@ -431,93 +430,59 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// A list of Tasks where each Task contains an IEnumerable of BusinessResponses.  The caller will have to await for the Tasks 
         /// to return to get the results.
         /// </returns>
-        public List<Task<IEnumerable<BusinessResponse>>> GetGraphQlInChunksAsyncInParallel(
+        public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsyncInParallel(
             List<string> businessIds,
             int chunkSize = 10,
             string fragment = DEFAULT_FRAGMENT,
             int semaphoreSlimMax = 10,
             CancellationToken ct = default(CancellationToken))
         {
+            var businessSubsets = GetSubsetsOfBusinessIds(businessIds, chunkSize);
+
+            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
+
+            var businessResponses = new List<BusinessResponse>();
+            await Task.WhenAll(businessSubsets.Select(async subset =>
+            {
+                await semaphoreSlim.WaitAsync(ct);
+                try
+                {
+                    businessResponses.AddRange(await GetGraphQlAsync(businessIds, fragment, ct));
+                }
+                finally
+                {
+                    semaphoreSlim.Release();
+                }
+            }));
+
+            return businessResponses;
+        }
+
+        /// <summary>
+        /// Method to convert a large number of strings into subsets based on the chunkSize.
+        /// </summary>
+        /// <param name="businessIds">Total list of all Business Ids.</param>
+        /// <param name="chunkSize">The size of each subset.</param>
+        /// <returns>A list of all subsets of Business Ids.</returns>
+        private List<List<string>> GetSubsetsOfBusinessIds(List<string> businessIds, int chunkSize)
+        {
             int page = 0;
             int totalBusinessIds = businessIds.Count;
             int maxPage = (totalBusinessIds / chunkSize) + 1;
 
-            var tasks = new List<Task<IEnumerable<BusinessResponse>>>();
-
-            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
-
-            bool firstTime = true;
+            var businessSubsets = new List<List<string>>();
             do
             {
-                semaphoreSlim.WaitAsync(ct);
-
                 var idSubset = businessIds.Skip(page * chunkSize).Take(chunkSize).ToList();
-                tasks.Add(ProcessSemaphoreSlimsForGraphQl(semaphoreSlim, idSubset, ct: ct));
-
-                // If first time, sleep so the oAuth token can be retreived before making all the other calls.
-                if (firstTime)
+                if (idSubset.Any())
                 {
-                    Task.Delay(FIRST_TIME_WAIT, ct).Wait(ct);
-                    firstTime = false;
+                    businessSubsets.Add(idSubset);
                 }
 
                 page++;
             } while (page < maxPage);
 
-            return tasks;
-        }
-
-        /// <summary>
-        /// This method processes the Semaphore wrapper around GetGraphQlAsync calls.
-        /// Written in part with: https://stackoverflow.com/a/39796934/311444
-        /// </summary>
-        /// <param name="semaphoreSlim">The Semaphore being used by the calling method.</param>
-        /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
-        /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
-        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
-        /// <returns>A list of BusinessResponses from the GraphQL endpoint wrapped in a Task.</returns>
-        private async Task<IEnumerable<BusinessResponse>> ProcessSemaphoreSlimsForGraphQl(
-            SemaphoreSlim semaphoreSlim,
-            List<string> businessIds,
-            string fragment = DEFAULT_FRAGMENT,
-            CancellationToken ct = default(CancellationToken))
-        {
-            Task<IEnumerable<BusinessResponse>> result;
-
-            try
-            {
-                result = GetGraphQlAsync(businessIds, fragment, ct);
-            }
-            finally
-            {
-                semaphoreSlim.Release();
-            }
-
-            await result;
-
-            return result.Result;
-        }
-
-        /// <summary>
-        /// This method is a utility method for processing the results of the GetGraphQlInChunksAsyncInParallel function.  It 
-        /// takes all of the completed tasks, gets the Lists of BusinessResponses out of them, and puts them all into one list.
-        /// Call this AFTER you have awaited GetGraphQlInParallel.
-        /// *** NOTE ***
-        /// The GraphQL endpoint is currently only available in the Yelp Fusion (3.0) Api Beta.  
-        /// To use these endpoints, you have to go to Manage App and opt into the Beta.
-        /// </summary>
-        /// <param name="tasks">List of Tasks of IEnumerable BusinessResponses from GetGraphQlInParallel.</param>
-        /// <returns>The complete list of all BusinessResponses from the GraphQL.</returns>
-        public IEnumerable<BusinessResponse> ProcessResultsOfGetGraphQlInChunksAsyncInParallel(List<Task<IEnumerable<BusinessResponse>>> tasks)
-        {
-            List<BusinessResponse> businessResponses = new List<BusinessResponse>();
-
-            foreach (var task in tasks)
-            {
-                businessResponses.AddRange(task.Result);
-            }
-
-            return businessResponses;
+            return businessSubsets;
         }
 
         #endregion
