@@ -226,10 +226,13 @@ hours {
         /// Written in part with: https://stackoverflow.com/a/39796934/311444 and https://stackoverflow.com/a/23316722/311444
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
-        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
         /// <returns>Returns an IEnumerable of BusinessResponses for each submitted businessId, wrapped in a Task.</returns>
-        public async Task<IEnumerable<BusinessResponse>> GetBusinessAsyncInParallel(IEnumerable<string> businessIds, int semaphoreSlimMax = 10, CancellationToken ct = default(CancellationToken))
+        public async Task<IEnumerable<BusinessResponse>> GetBusinessAsyncInParallel(
+            IEnumerable<string> businessIds, 
+            CancellationToken ct = default(CancellationToken),
+            int semaphoreSlimMax = 10)
         {
             SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
 
@@ -309,10 +312,13 @@ hours {
         /// To use these endpoints, you have to go to Manage App and opt into the Beta.
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
-        /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
         /// <returns>A task of an IEnumerable of all the BusinessResponses from the GraphQL API.</returns>
-        public async Task<IEnumerable<BusinessResponse>> GetGraphQlAsync(List<string> businessIds, string fragment = DEFAULT_FRAGMENT, CancellationToken ct = default(CancellationToken))
+        public async Task<IEnumerable<BusinessResponse>> GetGraphQlAsync(
+            List<string> businessIds,
+            CancellationToken ct = default(CancellationToken),
+            string fragment = DEFAULT_FRAGMENT)
         {
             if (!businessIds.Any())
             {
@@ -383,21 +389,21 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// To use these endpoints, you have to go to Manage App and opt into the Beta.
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
+        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <param name="chunkSize">How many businesses to submit on each request.</param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
         /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
-        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>A list of all BusinessResponses returned by every call to the GraphQL endpoint.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsync(
             List<string> businessIds,
+            CancellationToken ct = default(CancellationToken),
             int chunkSize = 10,
             string fragment = DEFAULT_FRAGMENT,
-            int semaphoreSlimMax = 10,
-            CancellationToken ct = default(CancellationToken))
+            int semaphoreSlimMax = 10)
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
 
-            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, chunkSize, fragment, semaphoreSlimMax, ct);
+            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, ct, chunkSize, fragment, semaphoreSlimMax);
 
             var businessResponseLists = await Task.WhenAll(graphResults);
 
@@ -422,20 +428,20 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// To use these endpoints, you have to go to Manage App and opt into the Beta.
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
+        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <param name="chunkSize">How many businesses to submit on each request.</param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
         /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
-        /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
         /// <returns>
         /// A list of Tasks where each Task contains an IEnumerable of BusinessResponses.  The caller will have to await for the Tasks 
         /// to return to get the results.
         /// </returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsyncInParallel(
             List<string> businessIds,
+            CancellationToken ct = default(CancellationToken),
             int chunkSize = 10,
             string fragment = DEFAULT_FRAGMENT,
-            int semaphoreSlimMax = 10,
-            CancellationToken ct = default(CancellationToken))
+            int semaphoreSlimMax = 10)
         {
             var businessSubsets = GetSubsetsOfBusinessIds(businessIds, chunkSize);
 
@@ -447,7 +453,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
                 await semaphoreSlim.WaitAsync(ct);
                 try
                 {
-                    businessResponses.AddRange(await GetGraphQlAsync(businessIds, fragment, ct));
+                    businessResponses.AddRange(await GetGraphQlAsync(businessIds, ct, fragment));
                 }
                 finally
                 {
