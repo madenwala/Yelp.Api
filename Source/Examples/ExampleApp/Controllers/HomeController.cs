@@ -84,7 +84,7 @@ namespace ExampleApp.Controllers
         public IActionResult TestGetGraphQlInChunksAsync()
         {
             IEnumerable<BusinessResponse> businessResponses = 
-                _client.GetGraphQlInChunksAsync(_yelpIds.ToList(), ct: default(CancellationToken), chunkSize: 10, fragment: Client.DEFAULT_FRAGMENT, semaphoreSlimMax: 10).Result;
+                _client.GetGraphQlInChunksAsync(_yelpIds.ToList(), ct: default(CancellationToken), chunkSize: 25, fragment: Client.DEFAULT_FRAGMENT, semaphoreSlimMax: 10).Result;
 
             return View("Result", businessResponses);
         }
@@ -93,7 +93,7 @@ namespace ExampleApp.Controllers
         public IActionResult TestGetGraphQlInChunksAsyncInParallel()
         {
             IEnumerable<BusinessResponse> businessResponses = 
-                _client.GetGraphQlInChunksAsyncInParallel(_yelpIds.ToList(), ct: default(CancellationToken), chunkSize: 10, fragment: Client.DEFAULT_FRAGMENT, semaphoreSlimMax: 10).Result;
+                _client.GetGraphQlInChunksAsyncInParallel(_yelpIds.ToList(), ct: default(CancellationToken), chunkSize: 25, fragment: Client.DEFAULT_FRAGMENT, semaphoreSlimMax: 10).Result;
 
             return View("Result", businessResponses);
         }

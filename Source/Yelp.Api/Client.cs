@@ -390,14 +390,18 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
-        /// <param name="chunkSize">How many businesses to submit on each request.</param>
+        /// <param name="chunkSize">
+        ///     How many businesses to submit on each request.  25 is the recommended amount.
+        ///     Submitting more at one time will make the call to Yelp take longer, but there will be less calls to Yelp overall.
+        ///     Submitting less at one time will make the calls to Yelp quicker, but there will be more calls to Yelp overall.
+        /// </param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
         /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
         /// <returns>A list of all BusinessResponses returned by every call to the GraphQL endpoint.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsync(
             List<string> businessIds,
             CancellationToken ct = default(CancellationToken),
-            int chunkSize = 10,
+            int chunkSize = 25,
             string fragment = DEFAULT_FRAGMENT,
             int semaphoreSlimMax = 10)
         {
@@ -429,7 +433,11 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
-        /// <param name="chunkSize">How many businesses to submit on each request.</param>
+        /// <param name="chunkSize">
+        ///     How many businesses to submit on each request.  25 is the recommended amount.
+        ///     Submitting more at one time will make the call to Yelp take longer, but there will be less calls to Yelp overall.
+        ///     Submitting less at one time will make the calls to Yelp quicker, but there will be more calls to Yelp overall.
+        /// </param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
         /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
         /// <returns>
@@ -439,7 +447,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsyncInParallel(
             List<string> businessIds,
             CancellationToken ct = default(CancellationToken),
-            int chunkSize = 10,
+            int chunkSize = 25,
             string fragment = DEFAULT_FRAGMENT,
             int semaphoreSlimMax = 10)
         {
