@@ -99,9 +99,8 @@ namespace Yelp.Api
         /// </summary>
         /// <typeparam name="T">Type for the strongly typed class representing data returned from the URL.</typeparam>
         /// <param name="url">URL to retrieve data from.</param>
-        /// <param name="contents">Any content that should be passed into the post.</param>
         /// <param name="ct">Cancellation token.</param>
-        /// <param name="serializerType">Specifies how the data should be deserialized.</param>
+        /// <param name="contents">Any content that should be passed into the post.</param>
         /// <returns>Instance of the type specified representing the data returned from the URL.</returns>
         protected async Task<T> PostAsync<T>(string url, CancellationToken ct, HttpContent contents = default(HttpContent))
         {
@@ -121,9 +120,8 @@ namespace Yelp.Api
         /// Posts data to the specified URL.
         /// </summary>
         /// <param name="url">URL to retrieve data from.</param>
-        /// <param name="contents">Any content that should be passed into the post.</param>
         /// <param name="ct">Cancellation token.</param>
-        /// <param name="serializerType">Specifies how the data should be deserialized.</param>
+        /// <param name="contents">Any content that should be passed into the post.</param>
         /// <returns>Response contents as string else null if nothing.</returns>
         protected async Task<string> PostAsync(string url, CancellationToken ct, HttpContent contents = default(HttpContent))
         {
@@ -138,7 +136,6 @@ namespace Yelp.Api
         /// <param name="url">URL to retrieve data from.</param>
         /// <param name="contents">Any content that should be passed into the post.</param>
         /// <param name="ct">Cancellation token.</param>
-        /// <param name="serializerType">Specifies how the data should be deserialized.</param>
         /// <returns>Response contents as string else null if nothing.</returns>
         protected async Task<HttpResponseMessage> PostAsync(string url, HttpContent contents, CancellationToken ct)
         {

@@ -254,13 +254,16 @@ hours {
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
-        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by this method.</param>
+        /// <param name="maxThreads">
+        ///     The max amount of calls to be made at one time by SemaphoreSlim. 2 is the recommended amount.
+        ///     More threads would mean more calls at once, but a greater chance of getting calls rejected by Yelp.
+        /// </param>
         /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>Returns an IEnumerable of BusinessResponses for each submitted businessId, wrapped in a Task.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetBusinessAsyncInParallel(
             IEnumerable<string> businessIds, 
             CancellationToken ct = default(CancellationToken),
-            int semaphoreSlimMax = 10,
+            int maxThreads = 2,
             ConnectionRetrySettings connectionRetrySettings = null)
         {
             if (connectionRetrySettings == null)
@@ -268,7 +271,7 @@ hours {
                 connectionRetrySettings = new ConnectionRetrySettings();
             }
 
-            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(10, semaphoreSlimMax);
+            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(maxThreads, maxThreads);
 
             var businessResponses = new List<BusinessResponse>();
             await Task.WhenAll(businessIds.Select(async businessId =>
@@ -441,18 +444,21 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         ///     Submitting less at one time will make the calls to Yelp quicker, but there will be more calls to Yelp overall.
         /// </param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
-        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by this method.</param>
+        /// <param name="maxThreads">
+        ///     The max amount of calls to be made at one time by SemaphoreSlim. 2 is the recommended amount.
+        ///     More threads would mean more calls at once, but a greater chance of getting calls rejected by Yelp.
+        /// </param>
         /// <returns>A list of all BusinessResponses returned by every call to the GraphQL endpoint.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsync(
             List<string> businessIds,
             CancellationToken ct = default(CancellationToken),
             int chunkSize = 25,
             string fragment = DEFAULT_FRAGMENT,
-            int semaphoreSlimMax = 10)
+            int maxThreads = 2)
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
 
-            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, ct, chunkSize, fragment, semaphoreSlimMax);
+            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, ct, chunkSize, fragment, maxThreads);
 
             var businessResponseLists = await Task.WhenAll(graphResults);
 
@@ -484,7 +490,10 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         ///     Submitting less at one time will make the calls to Yelp quicker, but there will be more calls to Yelp overall.
         /// </param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
-        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by this method.</param>
+        /// <param name="maxThreads">
+        ///     The max amount of calls to be made at one time by SemaphoreSlim. 2 is the recommended amount.
+        ///     More threads would mean more calls at once, but a greater chance of getting calls rejected by Yelp.
+        /// </param>
         /// <returns>
         /// A list of Tasks where each Task contains an IEnumerable of BusinessResponses.  The caller will have to await for the Tasks 
         /// to return to get the results.
@@ -494,11 +503,11 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
             CancellationToken ct = default(CancellationToken),
             int chunkSize = 25,
             string fragment = DEFAULT_FRAGMENT,
-            int semaphoreSlimMax = 10)
+            int maxThreads = 2)
         {
             var businessSubsets = GetSubsetsOfBusinessIds(businessIds, chunkSize);
 
-            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(10, semaphoreSlimMax);
+            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(maxThreads, maxThreads);
 
             var businessResponses = new List<BusinessResponse>();
             await Task.WhenAll(businessSubsets.Select(async subset =>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Yelp.Api;
 using Yelp.Api.Models;
@@ -67,7 +66,7 @@ namespace ExampleApp.Controllers
                 _client.GetBusinessAsyncInParallel(
                     _yelpIds.ToList(), 
                     ct: default(CancellationToken),
-                    semaphoreSlimMax: 10,
+                    maxThreads: 2,
                     connectionRetrySettings: new ConnectionRetrySettings()).Result;
 
             return View("Result", businessResponses);
@@ -98,7 +97,7 @@ namespace ExampleApp.Controllers
                     ct: default(CancellationToken), 
                     chunkSize: 25, 
                     fragment: Client.DEFAULT_FRAGMENT,
-                    semaphoreSlimMax: 10).Result;
+                    maxThreads: 2).Result;
 
             return View("Result", businessResponses);
         }
@@ -112,7 +111,7 @@ namespace ExampleApp.Controllers
                     ct: default(CancellationToken), 
                     chunkSize: 25, 
                     fragment: Client.DEFAULT_FRAGMENT,
-                    semaphoreSlimMax: 10).Result;
+                    maxThreads: 2).Result;
 
             return View("Result", businessResponses);
         }
