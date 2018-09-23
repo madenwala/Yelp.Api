@@ -102,8 +102,14 @@ hours {
         /// <param name="latitude">User's current latitude.</param>
         /// <param name="longitude">User's current longitude.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public async Task<SearchResponse> SearchBusinessesWithDeliveryAsync(string term, double latitude, double longitude, CancellationToken ct = default(CancellationToken))
+        public async Task<SearchResponse> SearchBusinessesWithDeliveryAsync(
+            string term, 
+            double latitude, 
+            double longitude, 
+            CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
             this.ValidateCoordinates(latitude, longitude);
             this.ApplyAuthenticationHeaders(ct);
@@ -114,9 +120,9 @@ hours {
             dic.Add("latitude", latitude);
             dic.Add("longitude", longitude);
             string querystring = dic.ToQueryString();
-            var response = await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct);
+            var response = await this.GetAsync<SearchResponse>(API_VERSION + "/transactions/delivery/search" + querystring, ct, connectionRetrySettings);
 
-            // Set distances baased on lat/lon
+            // Set distances based on lat/lon
             if (response?.Businesses != null && !double.IsNaN(latitude) && !double.IsNaN(longitude))
                 foreach (var business in response.Businesses)
                     business.SetDistanceAway(latitude, longitude);
@@ -131,15 +137,21 @@ hours {
         /// <param name="latitude">User's current latitude.</param>
         /// <param name="longitude">User's current longitude.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public Task<SearchResponse> SearchBusinessesAllAsync(string term, double latitude, double longitude, CancellationToken ct = default(CancellationToken))
+        public Task<SearchResponse> SearchBusinessesAllAsync(
+            string term, 
+            double latitude, 
+            double longitude, 
+            CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
             SearchRequest search = new SearchRequest();
             if (!string.IsNullOrEmpty(term))
                 search.Term = term;
             search.Latitude = latitude;
             search.Longitude = longitude;
-            return this.SearchBusinessesAllAsync(search, ct);
+            return this.SearchBusinessesAllAsync(search, ct, connectionRetrySettings);
         }
 
         /// <summary>
@@ -147,8 +159,12 @@ hours {
         /// </summary>
         /// <param name="search">Container object for all search parameters.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>SearchResponse with businesses matching the specified parameters.</returns>
-        public async Task<SearchResponse> SearchBusinessesAllAsync(SearchRequest search, CancellationToken ct = default(CancellationToken))
+        public async Task<SearchResponse> SearchBusinessesAllAsync(
+            SearchRequest search, 
+            CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
             if (search == null)
                 throw new ArgumentNullException(nameof(search));
@@ -157,7 +173,7 @@ hours {
             this.ApplyAuthenticationHeaders(ct);
 
             var querystring = search.GetChangedProperties().ToQueryString();
-            var response = await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct);
+            var response = await this.GetAsync<SearchResponse>(API_VERSION + "/businesses/search" + querystring, ct, connectionRetrySettings);
 
             // Set distances baased on lat/lon
             if (response?.Businesses != null && !double.IsNaN(search.Latitude) && !double.IsNaN(search.Longitude))
@@ -168,19 +184,26 @@ hours {
         }
 
         #endregion
-        
+
         #region Autocomplete
 
         /// <summary>
         /// Searches businesses matching the specified search text used in a client search autocomplete box.
         /// </summary>
-        /// <param name="term">Text to search businesses with.</param>
+        /// <param name="text">Text to search businesses with.</param>
         /// <param name="latitude">User's current latitude.</param>
         /// <param name="longitude">User's current longitude.</param>
         /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>AutocompleteResponse with businesses/categories/terms matching the specified parameters.</returns>
-        public async Task<AutocompleteResponse> AutocompleteAsync(string text, double latitude, double longitude, string locale = null, CancellationToken ct = default(CancellationToken))
+        public async Task<AutocompleteResponse> AutocompleteAsync(
+            string text, 
+            double latitude, 
+            double longitude, 
+            string locale = null, 
+            CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
             this.ValidateCoordinates(latitude, longitude);
             this.ApplyAuthenticationHeaders(ct);
@@ -193,7 +216,7 @@ hours {
                 dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
 
-            var response = await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct);
+            var response = await this.GetAsync<AutocompleteResponse>(API_VERSION + "/autocomplete" + querystring, ct, connectionRetrySettings);
 
             // Set distances baased on lat/lon
             if (response?.Businesses != null && !double.IsNaN(latitude) && !double.IsNaN(longitude))
@@ -212,29 +235,40 @@ hours {
         /// </summary>
         /// <param name="businessID">ID value of the Yelp business.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>BusinessResponse instance with details of the specified business if found.</returns>
-        public async Task<BusinessResponse> GetBusinessAsync(string businessID, CancellationToken ct = default(CancellationToken))
+        public async Task<BusinessResponse> GetBusinessAsync(
+            string businessID, 
+            CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
             this.ApplyAuthenticationHeaders(ct);            
-            return await this.GetAsync<BusinessResponse>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct);
+            return await this.GetAsync<BusinessResponse>(API_VERSION + "/businesses/" + Uri.EscapeUriString(businessID), ct, connectionRetrySettings);
         }
 
         /// <summary>
-        /// This method will retreive a list of Businesses from Yelp with separate calls.
+        /// This method will retrieve a list of Businesses from Yelp with separate calls.
         /// However, those calls will be made in parallel so while many calls will be made, the total
         /// results should be fast.
         /// Written in part with: https://stackoverflow.com/a/39796934/311444 and https://stackoverflow.com/a/23316722/311444
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
-        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
+        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by this method.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>Returns an IEnumerable of BusinessResponses for each submitted businessId, wrapped in a Task.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetBusinessAsyncInParallel(
             IEnumerable<string> businessIds, 
             CancellationToken ct = default(CancellationToken),
-            int semaphoreSlimMax = 10)
+            int semaphoreSlimMax = 10,
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
-            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
+            if (connectionRetrySettings == null)
+            {
+                connectionRetrySettings = new ConnectionRetrySettings();
+            }
+
+            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(10, semaphoreSlimMax);
 
             var businessResponses = new List<BusinessResponse>();
             await Task.WhenAll(businessIds.Select(async businessId =>
@@ -242,7 +276,13 @@ hours {
                 await semaphoreSlim.WaitAsync(ct);
                 try
                 {
-                    businessResponses.Add(await GetBusinessAsync(businessId, ct));
+                    // You have to create a separate object for each Semaphore, otherwise they all use the same counter and quickly run out of retries.
+                    ConnectionRetrySettings connectionRetrySettingsForThisAttempt = new ConnectionRetrySettings(
+                        connectionRetrySettings.CurrentTry, 
+                        connectionRetrySettings.IsRetryConnections, 
+                        connectionRetrySettings.MaxAmountOfTries);
+
+                    businessResponses.Add(await GetBusinessAsync(businessId, ct, connectionRetrySettingsForThisAttempt));
                 }
                 finally
                 {
@@ -263,8 +303,13 @@ hours {
         /// <param name="businessID">ID value of the Yelp business.</param>
         /// <param name="locale">Language/locale value from https://www.yelp.com/developers/documentation/v3/supported_locales </param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>ReviewsResponse instance with reviews of the specified business if found.</returns>
-        public async Task<ReviewsResponse> GetReviewsAsync(string businessID, string locale = null, CancellationToken ct = default(CancellationToken))
+        public async Task<ReviewsResponse> GetReviewsAsync(
+            string businessID, 
+            string locale = null, 
+            CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
             this.ApplyAuthenticationHeaders(ct);
 
@@ -273,7 +318,7 @@ hours {
                 dic.Add("locale", locale);
             string querystring = dic.ToQueryString();
 
-            return await this.GetAsync<ReviewsResponse>(API_VERSION + $"/businesses/{Uri.EscapeUriString(businessID)}/reviews" + querystring, ct);
+            return await this.GetAsync<ReviewsResponse>(API_VERSION + $"/businesses/{Uri.EscapeUriString(businessID)}/reviews" + querystring, ct, connectionRetrySettings);
         }
 
         #endregion
@@ -396,7 +441,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         ///     Submitting less at one time will make the calls to Yelp quicker, but there will be more calls to Yelp overall.
         /// </param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
-        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
+        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by this method.</param>
         /// <returns>A list of all BusinessResponses returned by every call to the GraphQL endpoint.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsync(
             List<string> businessIds,
@@ -439,7 +484,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         ///     Submitting less at one time will make the calls to Yelp quicker, but there will be more calls to Yelp overall.
         /// </param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
-        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by SemaphoreSlim.</param>
+        /// <param name="semaphoreSlimMax">The max amount of calls to be made at one time by this method.</param>
         /// <returns>
         /// A list of Tasks where each Task contains an IEnumerable of BusinessResponses.  The caller will have to await for the Tasks 
         /// to return to get the results.
@@ -453,7 +498,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         {
             var businessSubsets = GetSubsetsOfBusinessIds(businessIds, chunkSize);
 
-            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, semaphoreSlimMax);
+            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(10, semaphoreSlimMax);
 
             var businessResponses = new List<BusinessResponse>();
             await Task.WhenAll(businessSubsets.Select(async subset =>

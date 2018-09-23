@@ -52,19 +52,37 @@ namespace Yelp.Api
         /// Gets data from the specified URL.
         /// </summary>
         /// <typeparam name="T">Type for the strongly typed class representing data returned from the URL.</typeparam>
-        /// <param name="url">URL to retrieve data from.</param>should be deserialized.</param>
-        /// <param name="retryCount">Number of retry attempts if a call fails. Default is zero.</param>
-        /// <param name="serializerType">Specifies how the data should be deserialized.</param>
+        /// <param name="url">URL to retrieve data from.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>Instance of the type specified representing the data returned from the URL.</returns>
-        /// <summary>
-        protected async Task<T> GetAsync<T>(string url, CancellationToken ct)
+        protected async Task<T> GetAsync<T>(string url, CancellationToken ct, ConnectionRetrySettings connectionRetrySettings)
         {
             if (string.IsNullOrEmpty(url))
                 throw new ArgumentNullException(nameof(url));
 
+            if (connectionRetrySettings == null)
+            {
+                connectionRetrySettings = new ConnectionRetrySettings();
+            }
+
             var response = await this.Client.GetAsync(new Uri(this.BaseUri, url), ct);
             this.Log(response);
             var data = await response.Content.ReadAsStringAsync();
+
+            // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
+            if (Convert.ToInt32(response.StatusCode) == 429)
+            {
+                if (connectionRetrySettings.IsRetryConnections &&
+                    connectionRetrySettings.CurrentTry <= connectionRetrySettings.MaxAmountOfTries)
+                {
+                    if (data.Contains("You have exceeded the queries-per-second limit for this endpoint"))
+                    {
+                        connectionRetrySettings.CurrentTry++;
+                        return await GetAsync<T>(url, ct, connectionRetrySettings);
+                    }
+                }
+            }
 
             var settings = new JsonSerializerSettings
             {
