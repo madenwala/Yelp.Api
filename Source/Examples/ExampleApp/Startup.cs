@@ -45,6 +45,8 @@ namespace ExampleApp
 
             app.UseStaticFiles();
 
+            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
