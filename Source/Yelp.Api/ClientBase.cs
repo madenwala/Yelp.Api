@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -97,36 +98,43 @@ namespace Yelp.Api
         /// <summary>
         /// Posts data to the specified URL.
         /// </summary>
-        /// <typeparam name="T">Type for the strongly typed class representing data returned from the URL.</typeparam>
         /// <param name="url">URL to retrieve data from.</param>
         /// <param name="ct">Cancellation token.</param>
-        /// <param name="contents">Any content that should be passed into the post.</param>
-        /// <returns>Instance of the type specified representing the data returned from the URL.</returns>
-        protected async Task<T> PostAsync<T>(string url, CancellationToken ct, HttpContent contents = default(HttpContent))
-        {
-            string data = await this.PostAsync(url, ct, contents);
-
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore
-            };
-            var jsonModel = JsonConvert.DeserializeObject<T>(data, settings);
-
-            return jsonModel;
-        }
-
-        /// <summary>
-        /// Posts data to the specified URL.
-        /// </summary>
-        /// <param name="url">URL to retrieve data from.</param>
-        /// <param name="ct">Cancellation token.</param>
-        /// <param name="contents">Any content that should be passed into the post.</param>
+        /// <param name="httpConnectionSettings">Settings to create the HttpContent value.  Doing it inside the method allows for connection retries.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>Response contents as string else null if nothing.</returns>
-        protected async Task<string> PostAsync(string url, CancellationToken ct, HttpContent contents = default(HttpContent))
+        protected async Task<string> PostAsync(
+            string url, 
+            CancellationToken ct, 
+            HttpConnectionSettings httpConnectionSettings,
+            ConnectionRetrySettings connectionRetrySettings = null)
         {
-            HttpResponseMessage response = await this.PostAsync(url, contents, ct);
+            if (connectionRetrySettings == null)
+            {
+                connectionRetrySettings = new ConnectionRetrySettings();
+            }
+
+            HttpResponseMessage response = await this.PostAsync(
+                url,
+                new StringContent(httpConnectionSettings.Content, httpConnectionSettings.Encoding, httpConnectionSettings.MediaType), 
+                ct);
+
             var data = await response.Content?.ReadAsStringAsync();
+
+            // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
+            if (Convert.ToInt32(response.StatusCode) == 429)
+            {
+                if (connectionRetrySettings.IsRetryConnections &&
+                    connectionRetrySettings.CurrentTry <= connectionRetrySettings.MaxAmountOfTries)
+                {
+                    if (data.Contains("You have exceeded the queries-per-second limit for this endpoint"))
+                    {
+                        connectionRetrySettings.CurrentTry++;
+                        return await PostAsync(url, ct, httpConnectionSettings, connectionRetrySettings);
+                    }
+                }
+            }
+
             return data;
         }
 
@@ -137,7 +145,7 @@ namespace Yelp.Api
         /// <param name="contents">Any content that should be passed into the post.</param>
         /// <param name="ct">Cancellation token.</param>
         /// <returns>Response contents as string else null if nothing.</returns>
-        protected async Task<HttpResponseMessage> PostAsync(string url, HttpContent contents, CancellationToken ct)
+        private async Task<HttpResponseMessage> PostAsync(string url, HttpContent contents, CancellationToken ct)
         {
             if (string.IsNullOrEmpty(url))
                 throw new ArgumentNullException(nameof(url));
@@ -228,5 +236,12 @@ namespace Yelp.Api
         #endregion
 
         #endregion
+
+        protected class HttpConnectionSettings
+        {
+            public string Content { get; set; }
+            public Encoding Encoding { get; set; }
+            public string MediaType { get; set; }
+        }
     }
 }

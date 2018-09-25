@@ -361,11 +361,13 @@ hours {
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
         /// <returns>A task of an IEnumerable of all the BusinessResponses from the GraphQL API.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlAsync(
             List<string> businessIds,
             CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null,
             string fragment = DEFAULT_FRAGMENT)
         {
             if (!businessIds.Any())
@@ -373,10 +375,15 @@ hours {
                 return new List<BusinessResponse>();
             }
 
-            var content = new StringContent(CreateRequestBodyForGraphQl(businessIds, fragment), Encoding.UTF8, "application/graphql");
-
+            var httpConnectionSettings = new HttpConnectionSettings
+            {
+                Content = CreateRequestBodyForGraphQl(businessIds, fragment),
+                Encoding = Encoding.UTF8,
+                MediaType = "application/graphql"
+            };
+            
             ApplyAuthenticationHeaders(ct);
-            var jsonResponse = await PostAsync(API_VERSION + "/graphql", ct, content);
+            var jsonResponse = await PostAsync(API_VERSION + "/graphql", ct, httpConnectionSettings, connectionRetrySettings);
 
             return ConvertJsonToBusinesResponses(jsonResponse);
         }
@@ -438,6 +445,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <param name="chunkSize">
         ///     How many businesses to submit on each request.  25 is the recommended amount.
         ///     Submitting more at one time will make the call to Yelp take longer, but there will be less calls to Yelp overall.
@@ -452,13 +460,14 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsync(
             List<string> businessIds,
             CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null,
             int chunkSize = 25,
             string fragment = DEFAULT_FRAGMENT,
             int maxThreads = 2)
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
 
-            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, ct, chunkSize, fragment, maxThreads);
+            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, ct, connectionRetrySettings, chunkSize, fragment, maxThreads);
 
             var businessResponseLists = await Task.WhenAll(graphResults);
 
@@ -484,6 +493,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// </summary>
         /// <param name="businessIds">A list of Yelp Business Ids to request from the GraphQL endpoint.</param>
         /// <param name="ct">Cancellation token instance. Use CancellationToken.None if not needed.</param>
+        /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <param name="chunkSize">
         ///     How many businesses to submit on each request.  25 is the recommended amount.
         ///     Submitting more at one time will make the call to Yelp take longer, but there will be less calls to Yelp overall.
@@ -501,21 +511,32 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsyncInParallel(
             List<string> businessIds,
             CancellationToken ct = default(CancellationToken),
+            ConnectionRetrySettings connectionRetrySettings = null,
             int chunkSize = 25,
             string fragment = DEFAULT_FRAGMENT,
             int maxThreads = 2)
         {
-            var businessSubsets = GetSubsetsOfBusinessIds(businessIds, chunkSize);
+            if (connectionRetrySettings == null)
+            {
+                connectionRetrySettings = new ConnectionRetrySettings();
+            }
 
             SemaphoreSlim semaphoreSlim = new SemaphoreSlim(maxThreads, maxThreads);
 
             var businessResponses = new List<BusinessResponse>();
+            var businessSubsets = GetSubsetsOfBusinessIds(businessIds, chunkSize);
             await Task.WhenAll(businessSubsets.Select(async subset =>
             {
                 await semaphoreSlim.WaitAsync(ct);
                 try
                 {
-                    businessResponses.AddRange(await GetGraphQlAsync(businessIds, ct, fragment));
+                    // You have to create a separate object for each Semaphore, otherwise they all use the same counter and quickly run out of retries.
+                    ConnectionRetrySettings connectionRetrySettingsForThisAttempt = new ConnectionRetrySettings(
+                        connectionRetrySettings.CurrentTry,
+                        connectionRetrySettings.IsRetryConnections,
+                        connectionRetrySettings.MaxAmountOfTries);
+
+                    businessResponses.AddRange(await GetGraphQlAsync(businessIds, ct, connectionRetrySettingsForThisAttempt, fragment));
                 }
                 finally
                 {

@@ -83,6 +83,7 @@ namespace ExampleApp.Controllers
             IEnumerable<BusinessResponse> businessResponses = _client.GetGraphQlAsync(
                 _yelpIds.ToList(), 
                 ct: default(CancellationToken), 
+                connectionRetrySettings: null,
                 fragment: Client.DEFAULT_FRAGMENT).Result;
 
             return View("Result", businessResponses);
@@ -95,9 +96,9 @@ namespace ExampleApp.Controllers
                 _client.GetGraphQlInChunksAsync(
                     _yelpIds.ToList(), 
                     ct: default(CancellationToken), 
+                    connectionRetrySettings: null,
                     chunkSize: 25, 
-                    fragment: Client.DEFAULT_FRAGMENT,
-                    maxThreads: 2).Result;
+                    fragment: Client.DEFAULT_FRAGMENT).Result;
 
             return View("Result", businessResponses);
         }
@@ -109,6 +110,7 @@ namespace ExampleApp.Controllers
                 _client.GetGraphQlInChunksAsyncInParallel(
                     _yelpIds.ToList(), 
                     ct: default(CancellationToken), 
+                    connectionRetrySettings: null,
                     chunkSize: 25, 
                     fragment: Client.DEFAULT_FRAGMENT,
                     maxThreads: 2).Result;
