@@ -462,21 +462,9 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
             CancellationToken ct = default(CancellationToken),
             ConnectionRetrySettings connectionRetrySettings = null,
             int chunkSize = 25,
-            string fragment = DEFAULT_FRAGMENT,
-            int maxThreads = 2)
+            string fragment = DEFAULT_FRAGMENT)
         {
-            List<BusinessResponse> businessResponses = new List<BusinessResponse>();
-
-            var graphResults = GetGraphQlInChunksAsyncInParallel(businessIds, ct, connectionRetrySettings, chunkSize, fragment, maxThreads);
-
-            var businessResponseLists = await Task.WhenAll(graphResults);
-
-            foreach (var businessResponseList in businessResponseLists)
-            {
-                businessResponses.AddRange(businessResponseList);
-            }
-
-            return businessResponses;
+            return await GetGraphQlInChunksAsyncInParallel(businessIds, ct, connectionRetrySettings, chunkSize, fragment, 1);
         }
 
         /// <summary>
