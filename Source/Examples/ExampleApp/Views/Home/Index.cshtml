@@ -7,15 +7,15 @@
 
 <h3>Get Businesses</h3>
 <ul>
-    <li><a asp-action="TestGetBusinessAsync">Test GetBusinessAsync - 30 restaurants retrieved one at a time in about 30-33 seconds.</a></li>
-    <li><a asp-action="TestGetBusinessAsyncInParallel">Test GetBusinessAsyncInParallel - 30 restaurants retrieved in parallel in about 2-3 seconds.</a></li>
+    <li><a asp-action="TestGetBusinessAsync">Test GetBusinessAsync - 30 restaurants retrieved in series, one at a time, in about 8-9 seconds.</a></li>
+    <li><a asp-action="TestGetBusinessAsyncInParallel">Test GetBusinessAsyncInParallel - 30 restaurants retrieved in parallel, one at a time, in about 5-6 seconds.</a></li>
 </ul>
 
 <h3>Get Businesses GraphQL</h3>
 <ul>
-    <li><a asp-action="TestGetGraphQlAsync">Test GetGraphQlAsync - 30 restaurants retrieved via one GraphQL call in about 4-5 seconds.</a></li>
-    <li><a asp-action="TestGetGraphQlInChunksAsync">Test GetGraphQlInChunksAsync - 30 restaurants retrieved via multiple GraphQL calls (25 restaurants per call) made one at a time in about 3-4 seconds.</a></li>
-    <li><a asp-action="TestGetGraphQlInChunksAsyncInParallel">Test GetGraphQlInChunksAsyncInParallel - 30 restaurants retrieved via multiple GraphQL calls (25 restaurants per call) made in parallel in about 2-3 seconds.</a></li>
+    <li><a asp-action="TestGetGraphQlAsync">Test GetGraphQlAsync - 30 restaurants retrieved via one GraphQL call in about 3-4 seconds.</a></li>
+    <li><a asp-action="TestGetGraphQlInChunksAsync">Test GetGraphQlInChunksAsync - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 25 restaurants per call) made one at a time in about 7-8 seconds.</a></li>
+    <li><a asp-action="TestGetGraphQlInChunksAsyncInParallel">Test GetGraphQlInChunksAsyncInParallel - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 25 restaurants per call) made in parallel in about 4-5 seconds.</a></li>
 </ul>
 
 <h3>Search</h3>

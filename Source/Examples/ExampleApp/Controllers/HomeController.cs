@@ -41,7 +41,7 @@ namespace ExampleApp.Controllers
 
         #region GetBusiness
 
-        // 30 restaurants retrieved one a time in about 30-33 seconds.
+        // Test GetBusinessAsync - 30 restaurants retrieved in series, one at a time, in about 8-9 seconds.
         public IActionResult TestGetBusinessAsync()
         {
             List<BusinessResponse> businessResponses = new List<BusinessResponse>();
@@ -59,7 +59,7 @@ namespace ExampleApp.Controllers
             return View("Result", businessResponses);
         }
 
-        // 30 restaurants retrieved in parallel in about 2-3 seconds.
+        // Test GetBusinessAsyncInParallel - 30 restaurants retrieved in parallel, one at a time, in about 5-6 seconds.
         public IActionResult TestGetBusinessAsyncInParallel()
         {
             IEnumerable<BusinessResponse> businessResponses = 
@@ -76,7 +76,7 @@ namespace ExampleApp.Controllers
 
         #region GraphQL
 
-        // 30 restaurants retrieved via one GraphQL call in about 4-5 seconds.
+        // Test GetGraphQlAsync - 30 restaurants retrieved via one GraphQL call in about 3-4 seconds.
         public IActionResult TestGetGraphQlAsync()
         {
             // More than 10 items at a time used to crash Yelp's API.  Seems like they fixed it because now I can send at least 30 at a time.
@@ -89,7 +89,7 @@ namespace ExampleApp.Controllers
             return View("Result", businessResponses);
         }
 
-        // 30 restaurants retrieved via multiple GraphQL calls made one at a time in about 3-4 seconds.
+        // Test GetGraphQlInChunksAsync - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 25 restaurants per call) made one at a time in about 7-8 seconds.
         public IActionResult TestGetGraphQlInChunksAsync()
         {
             IEnumerable<BusinessResponse> businessResponses = 
@@ -103,7 +103,7 @@ namespace ExampleApp.Controllers
             return View("Result", businessResponses);
         }
 
-        // 30 restaurants retrieved via multiple GraphQL calls made in parallel in about 2-3 seconds.
+        // Test GetGraphQlInChunksAsyncInParallel - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 25 restaurants per call) made in parallel in about 4-5 seconds.
         public IActionResult TestGetGraphQlInChunksAsyncInParallel()
         {
             IEnumerable<BusinessResponse> businessResponses = 
