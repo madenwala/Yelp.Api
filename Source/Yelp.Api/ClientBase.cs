@@ -72,6 +72,7 @@ namespace Yelp.Api
             var data = await response.Content.ReadAsStringAsync();
 
             // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
+            // TODO: Look into using this instead in 2.1 https://stackoverflow.com/a/35183487/311444
             if (Convert.ToInt32(response.StatusCode) == 429)
             {
                 if (connectionRetrySettings.IsRetryConnections &&
@@ -122,6 +123,7 @@ namespace Yelp.Api
             var data = await response.Content?.ReadAsStringAsync();
 
             // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
+            // TODO: Look into using this instead in 2.1 https://stackoverflow.com/a/35183487/311444
             if (Convert.ToInt32(response.StatusCode) == 429)
             {
                 if (connectionRetrySettings.IsRetryConnections &&
