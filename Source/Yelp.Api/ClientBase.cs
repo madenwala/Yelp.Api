@@ -1,9 +1,11 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Yelp.Api.Exceptions;
 using Yelp.Api.Models;
 
 namespace Yelp.Api
@@ -71,19 +73,10 @@ namespace Yelp.Api
             this.Log(response);
             var data = await response.Content.ReadAsStringAsync();
 
-            // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
-            // TODO: Look into using this instead in 2.1 https://stackoverflow.com/a/35183487/311444
-            if (Convert.ToInt32(response.StatusCode) == 429)
+            if (DoesThisNeedToRetry(connectionRetrySettings, data, response.StatusCode))
             {
-                if (connectionRetrySettings.IsRetryConnections &&
-                    connectionRetrySettings.CurrentTry <= connectionRetrySettings.MaxAmountOfTries)
-                {
-                    if (data.Contains("You have exceeded the queries-per-second limit for this endpoint"))
-                    {
-                        connectionRetrySettings.CurrentTry++;
-                        return await GetAsync<T>(url, ct, connectionRetrySettings);
-                    }
-                }
+                connectionRetrySettings.CurrentTry++;
+                return await GetAsync<T>(url, ct, connectionRetrySettings);
             }
 
             var settings = new JsonSerializerSettings
@@ -95,7 +88,7 @@ namespace Yelp.Api
 
             return jsonModel;
         }
-
+        
         /// <summary>
         /// Posts data to the specified URL.
         /// </summary>
@@ -121,20 +114,11 @@ namespace Yelp.Api
                 ct);
 
             var data = await response.Content?.ReadAsStringAsync();
-
-            // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
-            // TODO: Look into using this instead in 2.1 https://stackoverflow.com/a/35183487/311444
-            if (Convert.ToInt32(response.StatusCode) == 429)
+            
+            if (DoesThisNeedToRetry(connectionRetrySettings, data, response.StatusCode))
             {
-                if (connectionRetrySettings.IsRetryConnections &&
-                    connectionRetrySettings.CurrentTry <= connectionRetrySettings.MaxAmountOfTries)
-                {
-                    if (data.Contains("You have exceeded the queries-per-second limit for this endpoint"))
-                    {
-                        connectionRetrySettings.CurrentTry++;
-                        return await PostAsync(url, ct, httpConnectionSettings, connectionRetrySettings);
-                    }
-                }
+                connectionRetrySettings.CurrentTry++;
+                return await PostAsync(url, ct, httpConnectionSettings, connectionRetrySettings);
             }
 
             return data;
@@ -157,6 +141,25 @@ namespace Yelp.Api
             return response;
         }
 
+        private bool DoesThisNeedToRetry(ConnectionRetrySettings connectionRetrySettings, string content, HttpStatusCode responseCode)
+        {
+            // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
+            // TODO: Look into using this instead in 2.1 https://stackoverflow.com/a/35183487/311444
+            if (Convert.ToInt32(responseCode) == 429)
+            {
+                if (content.Contains("You have exceeded the queries-per-second limit for this endpoint"))
+                {
+                    if (connectionRetrySettings.IsRetryConnections &&
+                        connectionRetrySettings.CurrentTry <= connectionRetrySettings.MaxAmountOfTries)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        
         #endregion
 
         #region Logging
