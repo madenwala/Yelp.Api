@@ -2,13 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <Version>1.3.4</Version>
+    <Version>1.4.0</Version>
     <Description>A library to be used by websites to interact with Yelp Fusion (v3.0) API.</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Michael Lipinski based off of Mohammed Adenwala's Yelp.Api</Authors>
     <PackageProjectUrl>https://github.com/Pinski/Yelp.Api.Web</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Pinski/Yelp.Api.Web</RepositoryUrl>
-    <PackageReleaseNotes>1.3.4 - Tuesday, Sept 11th, 2018
+    <PackageReleaseNotes>1.4.0 - Tuesday, Sept 25th, 2018
+- Fixed multithreading for GetBusinessAsyncInParallel and GetGraphQlInChunksAsyncInParallel so they actually send calls in parallel.  Consumer can also set how many threads they use, default is 2.
+- Fixed GetGraphQlInChunksAsync so it actually makes calls in series as intended.
+- Increased default size of businesses sent through GraphQl calls from 5 to 25 due to improvements to the Yelp API.  This can also be changed by the consumer.
+- Calls to Yelp API now have mechanics to automatically retry if they fail due to endpoint flooding.  Use the ConnectionRetrySettings class to change these settings.
+- This package will now throw AccessLimitExceptions if Yelp returns ACCESS_LIMIT_REACHED (for when you go over your daily amount of calls allowed).
+- General clean up and bug fixes.
+- Enhancements, clarifications, and fixes to the Example project.
+
+1.3.4 - Tuesday, Sept 11th, 2018
 Pull latest changes from base project so Yelp Authentication works again.  Minor example project clean up.
 
 1.3.3 - Thursday, July 27th, 2017
@@ -23,8 +32,8 @@ Added IsSpecialFlag to BusinessResponse model. (Removed in v1.3.4)
 1.3.0 - Monday, June 19, 2017
 First release as a Web version of Yelp.Api.</PackageReleaseNotes>
     <PackageIconUrl>https://www.yelpblog.com/wp-content/themes/yelpblog/images/yelp-avatar.png</PackageIconUrl>
-    <AssemblyVersion>1.3.4.0</AssemblyVersion>
-    <FileVersion>1.3.4.0</FileVersion>
+    <AssemblyVersion>1.4.0.0</AssemblyVersion>
+    <FileVersion>1.4.0.0</FileVersion>
     <PackageId>Yelp.Api.Web</PackageId>
   </PropertyGroup>
 
