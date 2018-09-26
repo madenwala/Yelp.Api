@@ -78,6 +78,7 @@ namespace Yelp.Api
                 connectionRetrySettings.CurrentTry++;
                 return await GetAsync<T>(url, ct, connectionRetrySettings);
             }
+            ThrowIfAccessLimitReached(data, response.StatusCode);
 
             var settings = new JsonSerializerSettings
             {
@@ -120,6 +121,7 @@ namespace Yelp.Api
                 connectionRetrySettings.CurrentTry++;
                 return await PostAsync(url, ct, httpConnectionSettings, connectionRetrySettings);
             }
+            ThrowIfAccessLimitReached(data, response.StatusCode);
 
             return data;
         }
@@ -159,7 +161,20 @@ namespace Yelp.Api
 
             return false;
         }
-        
+
+        private void ThrowIfAccessLimitReached(string content, HttpStatusCode responseCode)
+        {
+            // TODO: 429 Too Many Requests was not included in .NET Core 1.0.  Change when upgrading to 2.0
+            // TODO: Look into using this instead in 2.1 https://stackoverflow.com/a/35183487/311444
+            if (Convert.ToInt32(responseCode) == 429)
+            {
+                if (content.Contains("You've reached the access limit for this client"))
+                {
+                    throw new AccessLimitException(content);
+                }
+            }
+        }
+
         #endregion
 
         #region Logging
