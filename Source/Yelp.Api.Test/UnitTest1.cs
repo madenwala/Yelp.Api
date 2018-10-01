@@ -67,6 +67,19 @@ namespace Yelp.Api.Test
         }
 
         [TestMethod]
+        public void TestGetBusiness_RequestAlias_AliasComesBack()
+        {
+            var response = _client.GetBusinessAsync("north-india-restaurant-san-francisco").Result;
+
+            Assert.AreNotSame(null, response);
+            string id = response.Id;
+            string alias = response.Alias;
+            Assert.IsTrue(!string.IsNullOrEmpty(id), $"Id returned null or empty.");
+            Assert.IsTrue(!string.IsNullOrEmpty(alias), $"Alias returned null or empty.");
+            Assert.IsFalse(id.Equals(alias), $"Alias and Id are the same.");
+        }
+
+        [TestMethod]
         public void TestGetBusinessAsyncInParallel()
         {
             List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
@@ -114,6 +127,21 @@ namespace Yelp.Api.Test
 
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response?.FirstOrDefault().Error, $"Response error returned {response?.FirstOrDefault().Error?.Code} - {response?.FirstOrDefault().Error?.Description}");
+        }
+
+        [TestMethod]
+        public void TestGetGraphQlAsync_RequestAlias_AliasComesBack()
+        {
+            List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
+
+            var response = _client.GetGraphQlAsync(businessIds).Result;
+
+            Assert.AreNotSame(null, response);
+            string id = response.FirstOrDefault().Id;
+            string alias = response.FirstOrDefault().Alias;
+            Assert.IsTrue(!string.IsNullOrEmpty(id), $"Id returned null or empty.");
+            Assert.IsTrue(!string.IsNullOrEmpty(alias), $"Alias returned null or empty.");
+            Assert.IsFalse(id.Equals(alias), $"Alias and Id are the same.");
         }
 
         [TestMethod]

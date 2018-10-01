@@ -31,6 +31,7 @@ namespace Yelp.Api
         /// </summary>
         public const string DEFAULT_FRAGMENT = @"
 id
+alias
 photos
 name
 url
