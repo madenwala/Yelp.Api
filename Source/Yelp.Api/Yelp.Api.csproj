@@ -9,7 +9,7 @@
     <PackageProjectUrl>https://github.com/Pinski/Yelp.Api.Web</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Pinski/Yelp.Api.Web</RepositoryUrl>
     <PackageReleaseNotes>1.4.2 - Tuesday, Oct 2nd, 2018
-Accidnetally built packages from ExampleApp which caused unnecessary DLLs to be added to NuGet Package and any project that used the NuGet package.  Rebuilt package from Yelp.Api.sln so that these DLLs aren't included.
+Accidentally built packages from ExampleApp which caused unnecessary DLLs to be added to NuGet Package and any project that used the NuGet package.  Rebuilt package from Yelp.Api.sln so that these DLLs aren't included.
 
 1.4.1 - Monday, Oct 1st, 2018
 Yelp has made the field that was previously known as Id, now a Business's Alias.  Id is now a unique, generated string that is machine readable, where Alias is the unique human readable, hypen-separated business name.  Alias has now been added to BusinessResponse and the GraphQL data.
