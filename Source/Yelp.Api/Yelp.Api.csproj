@@ -2,14 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <Version>1.4.2</Version>
+    <Version>1.4.3</Version>
     <Description>A library to be used by websites to interact with Yelp Fusion (v3.0) API.</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Michael Lipinski based off of Mohammed Adenwala's Yelp.Api</Authors>
     <PackageProjectUrl>https://github.com/Pinski/Yelp.Api.Web</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Pinski/Yelp.Api.Web</RepositoryUrl>
-    <PackageReleaseNotes>1.4.2 - Tuesday, Oct 2nd, 2018
-Accidentally built packages from ExampleApp which caused unnecessary DLLs to be added to NuGet Package and any project that used the NuGet package.  Rebuilt package from Yelp.Api.sln so that these DLLs aren't included.
+    <PackageReleaseNotes>1.4.3 - Wednesday, Oct 3rd, 2018
+Removed extra DLLs that would show up in projects that used this NuGet package.
+
+1.4.2 - Tuesday, Oct 2nd, 2018
+[Deleted] This was supposed to fix the extra DLLs but didn't.  Removed because it didn't provide anything new beyond 1.4.1.
 
 1.4.1 - Monday, Oct 1st, 2018
 Yelp has made the field that was previously known as Id, now a Business's Alias.  Id is now a unique, generated string that is machine readable, where Alias is the unique human readable, hypen-separated business name.  Alias has now been added to BusinessResponse and the GraphQL data.
@@ -38,9 +41,10 @@ Added IsSpecialFlag to BusinessResponse model. (Removed in v1.3.4)
 1.3.0 - Monday, June 19, 2017
 First release as a Web version of Yelp.Api.</PackageReleaseNotes>
     <PackageIconUrl>https://www.yelpblog.com/wp-content/themes/yelpblog/images/yelp-avatar.png</PackageIconUrl>
-    <AssemblyVersion>1.4.2.0</AssemblyVersion>
-    <FileVersion>1.4.2.0</FileVersion>
+    <AssemblyVersion>1.4.3.0</AssemblyVersion>
+    <FileVersion>1.4.3.0</FileVersion>
     <PackageId>Yelp.Api.Web</PackageId>
+    <Product>Yelp.Api.Web</Product>
   </PropertyGroup>
 
   <ItemGroup>
