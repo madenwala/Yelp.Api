@@ -91,6 +91,17 @@ namespace ExampleApp.Controllers
 
         #endregion
 
+        #region GetReview
+
+        public IActionResult TestGetReview()
+        {
+            var reviewResponse = _client.GetReviewsAsync(_yelpIds[0]).Result;
+
+            return View("Review", reviewResponse);
+        }
+
+        #endregion
+
         #region GraphQL
 
         // Test GetGraphQlAsync - 30 restaurants retrieved via one GraphQL call in about 3-4 seconds.
@@ -162,6 +173,8 @@ namespace ExampleApp.Controllers
 
         #endregion
 
+        #region SearchBusinesses
+
         public IActionResult TestSearchBusinessesAllAsync()
         {
             var request = new SearchRequest
@@ -180,5 +193,7 @@ namespace ExampleApp.Controllers
 
             return View("Result", searchResponse.Businesses);
         }
+
+        #endregion
     }
 }

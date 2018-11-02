@@ -1,0 +1,45 @@
+﻿@using Yelp.Api.Models
+@model ReviewsResponse
+@{
+    ViewBag.Title = "Review";
+}
+
+<h2>Review</h2>
+
+<div id="resultsContainer">
+    <h3>Total Reviews:</h3>
+    @Model.Total
+
+    <h3>Possible Languages:</h3>
+    <ul>
+        @foreach(string language in Model.PossibleLanguages)
+        {
+            <li>@language</li>
+        }
+    </ul>
+
+    <h3>Reviews</h3>
+    @foreach (Review review in Model.Reviews)
+    {
+        <h4>Id</h4>
+        @review.Id
+
+        <h4>Url</h4>
+        @review.Url
+
+        <h4>Rating</h4>
+        @review.Rating
+
+        <h4>Text</h4>
+        @review.Text
+
+        <h4>User</h4>
+        @review.User
+
+        <h4>Time Created</h4>
+        @review.TimeCreated
+
+        <br/><br/>
+    }
+
+</div>
