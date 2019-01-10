@@ -48,7 +48,7 @@ location {
     address3
     city
     state
-    zip_code
+    postal_code
 }
 display_phone
 coordinates {

@@ -2,13 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <Version>1.4.4</Version>
+    <Version>1.4.5</Version>
     <Description>A library to be used by websites to interact with Yelp Fusion (v3.0) API.</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Michael Lipinski based off of Mohammed Adenwala's Yelp.Api</Authors>
     <PackageProjectUrl>https://github.com/Pinski/Yelp.Api.Web</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Pinski/Yelp.Api.Web</RepositoryUrl>
-    <PackageReleaseNotes>1.4.4 - Friday, Nov 2nd, 2018
+    <PackageReleaseNotes>1.4.5 - Wednesday, Jan 9th, 2019
+Possible Breaking Change - Yelp has removed the deprecated field zip_code and replaced it with postal_code.  This version correctly now uses postal_code and PostalCode.  This may break any of your code that still calls ZipCode, but that code will break when calling Yelp anyway.  Please update all references to PostalCode.
+
+1.4.4 - Friday, Nov 2nd, 2018
 Added new Yelp fields:
 - Added string Id to the Review object.
 - Added string[] PossibleLanguages to the ReviewResponse object.
@@ -47,8 +50,8 @@ Added IsSpecialFlag to BusinessResponse model. (Removed in v1.3.4)
 1.3.0 - Monday, June 19, 2017
 First release as a Web version of Yelp.Api.</PackageReleaseNotes>
     <PackageIconUrl>https://www.yelpblog.com/wp-content/themes/yelpblog/images/yelp-avatar.png</PackageIconUrl>
-    <AssemblyVersion>1.4.4.0</AssemblyVersion>
-    <FileVersion>1.4.4.0</FileVersion>
+    <AssemblyVersion>1.4.5.0</AssemblyVersion>
+    <FileVersion>1.4.5.0</FileVersion>
     <PackageId>Yelp.Api.Web</PackageId>
     <Product>Yelp.Api.Web</Product>
   </PropertyGroup>
