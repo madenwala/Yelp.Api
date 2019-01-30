@@ -22,7 +22,7 @@ namespace Yelp.Api
             if (dictionary == null)
                 return querystring;
 
-            foreach (var pair in dictionary.Where(w => w.Value != null))
+            foreach (var pair in dictionary.Where(w => w.Value != null && !string.IsNullOrEmpty(w.Value.ToString())))
                 parameters.Add(string.Join("=", pair.Key, Uri.EscapeUriString(pair.Value.ToString())));
 
             if (parameters.Count > 0)
