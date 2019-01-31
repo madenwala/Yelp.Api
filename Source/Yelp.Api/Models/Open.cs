@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Yelp.Api.Helpers;
 
 namespace Yelp.Api.Models
 {
@@ -16,22 +17,14 @@ namespace Yelp.Api.Models
         [JsonProperty("start")]
         public string Start { get; set; }
 
-        private string FormatTime(string time)
-        {
-            try
-            {
-                var dt = System.DateTime.Today.AddHours(double.Parse(time.Substring(0, 2))).AddMinutes(double.Parse(time.Substring(2)));
-                return dt.ToString("h:mmtt").ToLowerInvariant();
-            }
-            catch
-            {
-                return time;
-            }
-        }
-
         public override string ToString()
         {
-            return string.Format("{0}: {1} - {2}", (System.DayOfWeek)this.Day, this.FormatTime(this.Start), this.FormatTime(this.End));
+            // Yelp represents days of the week as 0-6 with 0 being Monday.
+            // C# represents days of the week as 0-6 with 0 being Sunday.
+            // So to convert to System.DayOfWeek we will need to add one and then modulus 7.
+            int dayOffset = (Day + 1) % 7;
+
+            return $"{(System.DayOfWeek)dayOffset}: {TimeHelper.FormatTime(Start)} - {TimeHelper.FormatTime(End)}";
         }
     }
 }
