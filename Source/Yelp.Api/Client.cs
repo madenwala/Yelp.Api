@@ -386,7 +386,7 @@ hours {
             ApplyAuthenticationHeaders(ct);
             var jsonResponse = await PostAsync(API_VERSION + "/graphql", ct, httpConnectionSettings, connectionRetrySettings);
 
-            return ConvertJsonToBusinesResponses(jsonResponse);
+            return ConvertJsonToBusinessResponses(jsonResponse);
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         /// </summary>
         /// <param name="jsonResponse">The JSON response from the GraphQL endpoint.</param>
         /// <returns>A list of BusinessResponses parsed from the JSON response string.</returns>
-        private IEnumerable<BusinessResponse> ConvertJsonToBusinesResponses(string jsonResponse)
+        private IEnumerable<BusinessResponse> ConvertJsonToBusinessResponses(string jsonResponse)
         {
             var jObject = JObject.Parse(jsonResponse);
             var businessResponseDictionary = jObject["data"].ToObject<Dictionary<string, BusinessResponse>>();
@@ -453,10 +453,6 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
         ///     Submitting less at one time will make the calls to Yelp quicker, but there will be more calls to Yelp overall.
         /// </param>
         /// <param name="fragment">The search fragment to be used on all requested Business Ids.  The DEFAULT_FRAGMENT is used by default.</param>
-        /// <param name="maxThreads">
-        ///     The max amount of calls to be made at one time by SemaphoreSlim. 2 is the recommended amount.
-        ///     More threads would mean more calls at once, but a greater chance of getting calls rejected by Yelp.
-        /// </param>
         /// <returns>A list of all BusinessResponses returned by every call to the GraphQL endpoint.</returns>
         public async Task<IEnumerable<BusinessResponse>> GetGraphQlInChunksAsync(
             List<string> businessIds,
@@ -525,7 +521,7 @@ fragment {DEFAULT_FRAGMENT_NAME} on Business {{
                         connectionRetrySettings.IsRetryConnections,
                         connectionRetrySettings.MaxAmountOfTries);
 
-                    businessResponses.AddRange(await GetGraphQlAsync(businessIds, ct, connectionRetrySettingsForThisAttempt, fragment));
+                    businessResponses.AddRange(await GetGraphQlAsync(subset, ct, connectionRetrySettingsForThisAttempt, fragment));
                 }
                 finally
                 {
