@@ -126,7 +126,7 @@ namespace ExampleApp.Controllers
             return View("Result", businessResponses);
         }
 
-        // Test GetGraphQlInChunksAsync - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 25 restaurants per call) made one at a time in about 7-8 seconds.
+        // Test GetGraphQlInChunksAsync - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 15 restaurants per call) made one at a time in about 7-8 seconds.
         public IActionResult TestGetGraphQlInChunksAsync()
         {
             IEnumerable<BusinessResponse> businessResponses;
@@ -137,7 +137,7 @@ namespace ExampleApp.Controllers
                     _yelpIds.ToList(),
                     ct: default(CancellationToken),
                     connectionRetrySettings: null,
-                    chunkSize: 25,
+                    chunkSize: 15,
                     fragment: Client.DEFAULT_FRAGMENT).Result;
             }
             catch (AggregateException e)
@@ -148,7 +148,7 @@ namespace ExampleApp.Controllers
             return View("Result", businessResponses);
         }
 
-        // Test GetGraphQlInChunksAsyncInParallel - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 25 restaurants per call) made in parallel in about 4-5 seconds.
+        // Test GetGraphQlInChunksAsyncInParallel - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 15 restaurants max per call) made in parallel in about 4-5 seconds.
         public IActionResult TestGetGraphQlInChunksAsyncInParallel()
         {
             IEnumerable<BusinessResponse> businessResponses;
@@ -159,7 +159,7 @@ namespace ExampleApp.Controllers
                     _yelpIds.ToList(),
                     ct: default(CancellationToken),
                     connectionRetrySettings: null,
-                    chunkSize: 25,
+                    chunkSize: 15,
                     fragment: Client.DEFAULT_FRAGMENT,
                     maxThreads: 2).Result;
             }

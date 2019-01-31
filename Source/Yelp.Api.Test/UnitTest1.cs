@@ -12,6 +12,16 @@ namespace Yelp.Api.Test
     {
         #region Variables
 
+        private readonly String[] _yelpIds =
+        {
+            "de-afghanan-cuisine-fremont", "de-afghanan-kabob-house-fremont-3", "de-afghanan-kabob-house-san-francisco-2", "gulzaar-halal-restaurant-and-catering-san-jose-7", "helmand-palace-san-francisco",
+            "kabob-trolley-san-francisco-5", "kabul-afghan-cuisine-san-carlos", "kabul-afghan-cuisine-sunnyvale-2", "kabul-express-kabob-newark", "kabul-kabob-and-grill-dublin",
+            "khyber-pass-kabob-dublin", "l-aziz-bakery-eatery-union-city-2", "little-kabul-market-fremont", "maiwand-halal-kabob-truck-san-francisco", "maiwand-kabob-house-fremont",
+            "maiwand-kabob-house-santa-clara", "peshawari-kababs-union-city", "qs-halal-chicken-alameda", "rasa-burlingame", "redwood-bistro-redwood-city",
+            "rocknwraps-and-kabobs-redwood-city-2", "salang-pass-restaurant-fremont", "shami-restaurant-and-hookah-lounge-san-leandro", "tayyibaat-meat-and-grill-union-city-2", "the-ravioli-house-san-mateo",
+            "yakitori-kokko-san-mateo", "zalla-kabab-house-danville", "zam-zam-grill-fremont", "annar-afghan-cuisine-hayward", "izakaya-mai-san-mateo"
+        };
+
         private const string API_KEY = "DIPv31nNF1wnUg7VdqZEqU4GDg17kTlB8GzuwF9RXsWbo8yVXcRrEd5r_9G2oTjN8eooq5umIHJM7sAt0m1eVDY6lVTnQAlyzBGVNQ6SqL9f-ezPMOsLriVI4jEvWXYx";
 
         private readonly Client _client;
@@ -156,6 +166,15 @@ namespace Yelp.Api.Test
         }
 
         [TestMethod]
+        public void TestGetGraphQlInChunksAsync_SendThirtyBusinesses_ReturnsThirtyBusinesses()
+        {
+            var response = _client.GetGraphQlInChunksAsync(_yelpIds.ToList()).Result;
+
+            Assert.AreNotSame(null, response);
+            Assert.IsTrue(response.Count() == 30);
+        }
+
+        [TestMethod]
         public void TestGetGraphQlInChunksAsyncInParallel()
         {
             List<string> businessIds = new List<string> { "north-india-restaurant-san-francisco" };
@@ -165,6 +184,15 @@ namespace Yelp.Api.Test
             Assert.AreNotSame(null, response);
             Assert.AreSame(null, response.Result.FirstOrDefault()?.Error,
                 $"Response error returned {response.Result.FirstOrDefault()?.Error?.Code} - {response.Result.FirstOrDefault()?.Error?.Description}");
+        }
+
+        [TestMethod]
+        public void TestGetGraphQlInChunksAsyncInParallel_SendThirtyBusinesses_ReturnsThirtyBusinesses()
+        {
+            var response = _client.GetGraphQlInChunksAsyncInParallel(_yelpIds.ToList());
+
+            Assert.AreNotSame(null, response);
+            Assert.IsTrue(response.Result.Count() == 30);
         }
 
         #endregion
