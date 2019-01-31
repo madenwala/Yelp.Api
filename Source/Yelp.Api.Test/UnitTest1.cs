@@ -77,6 +77,18 @@ namespace Yelp.Api.Test
         }
 
         [TestMethod]
+        public void GetBusinessAsync_MakeNormalRequest_RateLimitValuesAreReturned()
+        {
+            var response = _client.GetBusinessAsync("north-india-restaurant-san-francisco").Result;
+
+            Assert.AreNotSame(null, response);
+            Assert.AreNotSame(null, response.RateLimit);
+            Assert.AreNotSame(default(int), response.RateLimit.DailyLimit);
+            Assert.AreNotSame(default(int), response.RateLimit.Remaining);
+            Assert.AreNotSame(default(DateTime), response.RateLimit.ResetTime);
+        }
+
+        [TestMethod]
         public void TestGetBusiness_RequestAlias_AliasComesBack()
         {
             var response = _client.GetBusinessAsync("north-india-restaurant-san-francisco").Result;
@@ -109,7 +121,17 @@ namespace Yelp.Api.Test
             Assert.AreSame(null, response?.Error, $"Response error returned {response?.Error?.Code} - {response?.Error?.Description}");
         }
 
+        [TestMethod]
+        public void GetReviews_MakeNormalRequest_RateLimitValuesAreReturned()
+        {
+            var response = _client.GetReviewsAsync("north-india-restaurant-san-francisco").Result;
 
+            Assert.AreNotSame(null, response);
+            Assert.AreNotSame(null, response.RateLimit);
+            Assert.AreNotSame(default(int), response.RateLimit.DailyLimit);
+            Assert.AreNotSame(default(int), response.RateLimit.Remaining);
+            Assert.AreNotSame(default(DateTime), response.RateLimit.ResetTime);
+        }
 
         [TestMethod]
         public void TestGetModelChanges()

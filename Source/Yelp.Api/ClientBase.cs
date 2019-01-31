@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -59,7 +60,7 @@ namespace Yelp.Api
         /// <param name="ct">Cancellation token.</param>
         /// <param name="connectionRetrySettings">The settings to define whether a connection should be retried.</param>
         /// <returns>Instance of the type specified representing the data returned from the URL.</returns>
-        protected async Task<T> GetAsync<T>(string url, CancellationToken ct, ConnectionRetrySettings connectionRetrySettings)
+        protected async Task<T> GetAsync<T>(string url, CancellationToken ct, ConnectionRetrySettings connectionRetrySettings) where T : ResponseBase
         {
             if (string.IsNullOrEmpty(url))
                 throw new ArgumentNullException(nameof(url));
@@ -86,6 +87,20 @@ namespace Yelp.Api
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
             var jsonModel = JsonConvert.DeserializeObject<T>(data, settings);
+
+            jsonModel.RateLimit = new RateLimit();
+            if (response.Headers.Contains("RateLimit-DailyLimit"))
+            {
+                jsonModel.RateLimit.DailyLimit = Convert.ToInt32(response.Headers.GetValues("RateLimit-DailyLimit").FirstOrDefault());
+            }
+            if (response.Headers.Contains("RateLimit-Remaining"))
+            {
+                jsonModel.RateLimit.Remaining = Convert.ToInt32(response.Headers.GetValues("RateLimit-Remaining").FirstOrDefault());
+            }
+            if (response.Headers.Contains("RateLimit-ResetTime"))
+            {
+                jsonModel.RateLimit.ResetTime = Convert.ToDateTime(response.Headers.GetValues("RateLimit-ResetTime").FirstOrDefault());
+            }
 
             return jsonModel;
         }
