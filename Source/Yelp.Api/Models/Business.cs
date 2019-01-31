@@ -61,6 +61,9 @@ namespace Yelp.Api.Models
         [JsonProperty("alias")]
         public string Alias { get; set; }
         
+        [JsonProperty("special_hours")]
+        public SpecialHour[] SpecialHours { get; set; }
+
         #endregion
 
         #region Location

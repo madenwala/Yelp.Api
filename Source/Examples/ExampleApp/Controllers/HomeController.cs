@@ -16,7 +16,7 @@ namespace ExampleApp.Controllers
 
         private readonly String[] _yelpIds =
         {
-            "de-afghanan-cuisine-fremont", "de-afghanan-kabob-house-fremont-3", "de-afghanan-kabob-house-san-francisco-2", "gulzaar-halal-restaurant-and-catering-san-jose-7", "helmand-palace-san-francisco",
+            "sushi-sams-edomata-san-mateo-2", "de-afghanan-kabob-house-fremont-3", "de-afghanan-kabob-house-san-francisco-2", "gulzaar-halal-restaurant-and-catering-san-jose-7", "helmand-palace-san-francisco",
             "kabob-trolley-san-francisco-5", "kabul-afghan-cuisine-san-carlos", "kabul-afghan-cuisine-sunnyvale-2", "kabul-express-kabob-newark", "kabul-kabob-and-grill-dublin",
             "khyber-pass-kabob-dublin", "l-aziz-bakery-eatery-union-city-2", "little-kabul-market-fremont", "maiwand-halal-kabob-truck-san-francisco", "maiwand-kabob-house-fremont",
             "maiwand-kabob-house-santa-clara", "peshawari-kababs-union-city", "qs-halal-chicken-alameda", "rasa-burlingame", "redwood-bistro-redwood-city",
@@ -85,7 +85,7 @@ namespace ExampleApp.Controllers
             {
                 throw e.InnerException;
             }
-
+            
             return View("Result", businessResponses);
         }
 
