@@ -162,15 +162,20 @@ namespace Yelp.Api.Models
 
         private string _Attributes;
         /// <summary>
-        /// Optional. Additional filters to restrict search results. Possible values are: 
-        ///     hot_and_new - Hot and New businesses
-        ///     request_a_quote - Businesses that have the Request a Quote feature
-        ///     waitlist_reservation - Businesses that have an online waitlist
-        ///     cashback - Businesses that offer Cash Back
-        ///     deals - Businesses that offer Deals
-        /// You can combine multiple attributes by providing a comma separated like "attribute1,attribute2". If multiple attributes are used, only businesses that 
-        /// satisfy ALL attributes will be returned in search results.For example, the attributes "hot_and_new,cashback" will return businesses that are 
-        /// Hot and New AND offer Cash Back. 
+        /// Optional. Try these additional filters to return specific search results!
+        ///     hot_and_new - popular businesses which recently joined Yelp
+        ///     request_a_quote - businesses which actively reply to Request a Quote inquiries
+        ///     reservation - businesses with Yelp Reservations bookings enabled on their profile page
+        ///     waitlist_reservation - businesses with Yelp Waitlist bookings enabled on their profile screen(iOS/Android)
+        ///     cashback - businesses offering Yelp Cash Back to in-house customers
+        ///     deals - businesses offering Yelp Deals on their profile page
+        ///     gender_neutral_restrooms - businesses which provide gender neutral restrooms
+        ///     open_to_all - businesses which are Open To All
+        ///     wheelchair_accessible - businesses which are Wheelchair Accessible
+        /// You can combine multiple attributes by providing a comma separated like "attribute1,attribute2".
+        /// If multiple attributes are used, only businesses that satisfy ALL attributes will be returned in
+        /// search results.For example, the attributes "hot_and_new,cashback" will return businesses that
+        /// are Hot and New AND offer Cash Back. 
         /// </summary>
         [JsonProperty("attributes")]
         public string Attributes

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Yelp.Api.Models
 {
@@ -6,6 +7,8 @@ namespace Yelp.Api.Models
     {
         [JsonProperty("error")]
         public ResponseError Error { get; set; }
+
+        public RateLimit RateLimit { get; set; }
     }
 
     public sealed class ResponseError
@@ -15,5 +18,14 @@ namespace Yelp.Api.Models
 
         [JsonProperty("code")]
         public string Code { get; set; }
+    }
+
+    public sealed class RateLimit
+    {
+        public int DailyLimit { get; set; }
+
+        public int Remaining { get; set; }
+
+        public DateTime ResetTime { get; set; }
     }
 }

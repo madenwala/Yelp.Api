@@ -1,79 +1,63 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{200A88E3-8B18-4FA8-896E-638EA6F65C19}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Yelp.Api</RootNamespace>
-    <AssemblyName>Yelp.Api</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <Version>1.4.5</Version>
+    <Description>A library to be used by websites to interact with Yelp Fusion (v3.0) API.</Description>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Michael Lipinski based off of Mohammed Adenwala's Yelp.Api</Authors>
+    <PackageProjectUrl>https://github.com/Pinski/Yelp.Api.Web</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Pinski/Yelp.Api.Web</RepositoryUrl>
+    <PackageReleaseNotes>1.4.5 - Wednesday, Jan 9th, 2019
+Possible Breaking Change - Yelp has removed the deprecated field zip_code and replaced it with postal_code.  This version correctly now uses postal_code and PostalCode.  This may break any of your code that still calls ZipCode, but that code will break when calling Yelp anyway.  Please update all references to PostalCode.
+
+1.4.4 - Friday, Nov 2nd, 2018
+Added new Yelp fields:
+- Added string Id to the Review object.
+- Added string[] PossibleLanguages to the ReviewResponse object.
+- Added string Id and string ProfileUrl to the User object.
+
+1.4.3 - Wednesday, Oct 3rd, 2018
+Removed extra DLLs that would show up in projects that used this NuGet package.
+
+1.4.2 - Tuesday, Oct 2nd, 2018
+[Deleted] This was supposed to fix the extra DLLs but didn't.  Removed because it didn't provide anything new beyond 1.4.1.
+
+1.4.1 - Monday, Oct 1st, 2018
+Yelp has made the field that was previously known as Id, now a Business's Alias.  Id is now a unique, generated string that is machine readable, where Alias is the unique human readable, hypen-separated business name.  Alias has now been added to BusinessResponse and the GraphQL data.
+
+1.4.0 - Tuesday, Sept 25th, 2018
+- Fixed multithreading for GetBusinessAsyncInParallel and GetGraphQlInChunksAsyncInParallel so they actually send calls in parallel.  Consumer can also set how many threads they use, default is 2.
+- Fixed GetGraphQlInChunksAsync so it actually makes calls in series as intended.
+- Increased default size of businesses sent through GraphQl calls from 5 to 25 due to improvements to the Yelp API.  This can also be changed by the consumer.
+- Calls to Yelp API now have mechanics to automatically retry if they fail due to endpoint flooding.  Use the ConnectionRetrySettings class to change these settings.
+- This package will now throw AccessLimitExceptions if Yelp returns ACCESS_LIMIT_REACHED (for when you go over your daily amount of calls allowed).
+- General clean up and bug fixes.
+- Enhancements, clarifications, and fixes to the Example project.
+
+1.3.4 - Tuesday, Sept 11th, 2018
+Pull latest changes from base project so Yelp Authentication works again.  Minor example project clean up.
+
+1.3.3 - Thursday, July 27th, 2017
+Fix bug that was making GraphQL calls with wrong Content-Type.  Updates to Yelp.Api require Content-Type: application/graphql now when making GraphQL calls.
+
+1.3.2 - Friday, July 15th, 2017
+Fix bug when converting businesses that have null coordinates from Yelp.
+
+1.3.1 - Monday, June 19, 2017
+Added IsSpecialFlag to BusinessResponse model. (Removed in v1.3.4)
+
+1.3.0 - Monday, June 19, 2017
+First release as a Web version of Yelp.Api.</PackageReleaseNotes>
+    <PackageIconUrl>https://www.yelpblog.com/wp-content/themes/yelpblog/images/yelp-avatar.png</PackageIconUrl>
+    <AssemblyVersion>1.4.5.0</AssemblyVersion>
+    <FileVersion>1.4.5.0</FileVersion>
+    <PackageId>Yelp.Api.Web</PackageId>
+    <Product>Yelp.Api.Web</Product>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Client.cs" />
-    <Compile Include="ClientBase.cs" />
-    <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Models\AutocompleteResponse.cs" />
-    <Compile Include="Models\Business.cs" />
-    <Compile Include="Models\Category.cs" />
-    <Compile Include="Models\Coordinate.cs" />
-    <Compile Include="Models\Hour.cs" />
-    <Compile Include="Models\ILogger.cs" />
-    <Compile Include="Models\Location.cs" />
-    <Compile Include="Models\ModelBase.cs" />
-    <Compile Include="Models\Open.cs" />
-    <Compile Include="Models\Region.cs" />
-    <Compile Include="Models\ResponseBase.cs" />
-    <Compile Include="Models\Review.cs" />
-    <Compile Include="Models\ReviewsResponse.cs" />
-    <Compile Include="Models\SearchRequest.cs" />
-    <Compile Include="Models\SearchResponse.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="CreatePackage.cmd" />
-    <None Include="packages.config" />
-    <None Include="Yelp.Api.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="nuget.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Yelp Web Examples";
+}
+
+<br />
+<br />
+
+<h3>Get Businesses</h3>
+<ul>
+    <li><a asp-action="TestGetBusinessAsync">Test GetBusinessAsync - 30 restaurants retrieved in series, one at a time, in about 8-9 seconds.</a></li>
+    <li><a asp-action="TestGetBusinessAsyncInParallel">Test GetBusinessAsyncInParallel - 30 restaurants retrieved in parallel, one at a time, in about 5-6 seconds.</a></li>
+</ul>
+
+<h3>Get Review</h3>
+<ul>
+    <li><a asp-action="TestGetReview">Test to get the Reviews of a Restaurant and display what is in a Review object.</a></li>
+</ul>
+
+<h3>Get Businesses GraphQL</h3>
+<ul>
+    <li><a asp-action="TestGetGraphQlAsync">Test GetGraphQlAsync - 30 restaurants retrieved via one GraphQL call in about 3-4 seconds.</a></li>
+    <li><a asp-action="TestGetGraphQlInChunksAsync">Test GetGraphQlInChunksAsync - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 15 restaurants per call) made one at a time in about 7-8 seconds.</a></li>
+    <li><a asp-action="TestGetGraphQlInChunksAsyncInParallel">Test GetGraphQlInChunksAsyncInParallel - 30 restaurants retrieved via multiple GraphQL calls (2 calls, 15 restaurants per call) made in parallel in about 4-5 seconds.</a></li>
+</ul>
+
+<h3>Search</h3>
+<ul>
+    <li><a asp-action="TestSearchBusinessesAllAsync">Test SearchBusinessesAllAsync - Get the maximum amount of restaurants (50) with a particular search request.</a></li>
+</ul>
