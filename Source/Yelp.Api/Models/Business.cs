@@ -45,6 +45,9 @@ namespace Yelp.Api.Models
 
         [JsonProperty("id")]
         public string Id { get; set; }
+        
+        [JsonProperty("alias")]
+        public string Alias { get; set; }
 
         [JsonProperty("review_count")]
         public int ReviewCount { get; set; }
